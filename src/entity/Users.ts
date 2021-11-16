@@ -1,18 +1,38 @@
-import { Entity, PrimaryGeneratedColumn, Unique, Column } from 'typeorm';
-import { MinLength, IsNotEmpty, IsEmail } from 'class-validator';
+import { Entity, 
+         PrimaryGeneratedColumn, 
+         Unique, 
+         Column } from 'typeorm';
+import { MinLength, 
+         IsNotEmpty, 
+         IsEmail } from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 
 @Entity()
 @Unique(['username'])
+@Unique(['email'])
+
 export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   @MinLength(6)
-  @IsEmail()
   @IsNotEmpty()
   username: string;
+
+  @Column()
+  @IsNotEmpty()
+  firstName: string;
+
+  @Column()
+  @IsNotEmpty()
+  lastName: string;
+
+  @Column()
+  @MinLength(6)
+  @IsEmail()
+  @IsNotEmpty()
+  email: string;
 
   @Column()
   @MinLength(6)
@@ -22,6 +42,9 @@ export class Users {
   @Column()
   @IsNotEmpty()
   role: string;
+
+  @Column()
+  whatsappNumber: string;
 
   hashPassword(): void {
     const salt = bcrypt.genSaltSync(10);

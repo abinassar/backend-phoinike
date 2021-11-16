@@ -15,7 +15,7 @@ router.get('/:id', [checkJwt, checkRole(['admin'])], UserController.getById);
 router.post('/', UserController.new);
 
 // Edit user
-router.patch('/:id', [checkJwt, checkRole(['admin'])], UserController.edit);
+router.patch('/:id', [checkJwt], UserController.edit);
 
 // Delete
 router.delete('/:id', [checkJwt, checkRole(['admin'])], UserController.delete);

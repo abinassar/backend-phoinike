@@ -9,7 +9,7 @@ export class UserController {
     let users;
 
     try {
-      users = await userRepository.find({ select: ['id', 'username', 'role'] });
+      users = await userRepository.find({ select: ['id', 'username', 'role', 'whatsappNumber', 'email'] });
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!' });
     }
@@ -33,12 +33,22 @@ export class UserController {
   };
 
   static new = async (req: Request, res: Response) => {
-    const { username, password, role } = req.body;
+    const { username, 
+            firstName,
+            lastName, 
+            password, 
+            role, 
+            email, 
+            whatsappNumber } = req.body;
     const user = new Users();
 
     user.username = username;
+    user.firstName = firstName;
+    user.lastName = lastName;
     user.password = password;
     user.role = role;
+    user.email = email;
+    user.whatsappNumber = whatsappNumber;
 
     // Validate
     const validationOpt = { validationError: { target: false, value: false } };
@@ -63,14 +73,23 @@ export class UserController {
   static edit = async (req: Request, res: Response) => {
     let user;
     const { id } = req.params;
-    const { username, role } = req.body;
+    const { username,
+            firstName,
+            lastName, 
+            role, 
+            email, 
+            whatsappNumber } = req.body;
 
     const userRepository = getRepository(Users);
     // Try get user
     try {
       user = await userRepository.findOneOrFail(id);
       user.username = username;
+      user.firstName = firstName;
+      user.lastName = lastName;
       user.role = role;
+      user.email = email;
+      user.whatsappNumber = whatsappNumber;
     } catch (e) {
       return res.status(404).json({ message: 'User not found' });
     }
