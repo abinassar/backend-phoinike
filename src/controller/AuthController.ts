@@ -4,6 +4,7 @@ import { Users } from '../entity/Users';
 import * as jwt from 'jsonwebtoken';
 import config from '../config/config';
 import { validate } from 'class-validator';
+import { transporter } from '../config/mailer';
 
 class AuthController {
   static login = async (req: Request, res: Response) => {
@@ -89,7 +90,7 @@ class AuthController {
       // Find user email in database 
       user = await userRepository.findOneOrFail({where: {email}});
       const token = jwt.sign({userId: user.id, email: user.email}, config.jwtSecretReset, {expiresIn: '30m'});
-      verificationLink = `http://localhost:3000/new-password/${token}`;
+      verificationLink = `http://localhost:4200/new-password/${token}`;
       user.resetToken = token;
       
     } catch (error) {
@@ -101,7 +102,17 @@ class AuthController {
     
     try {
 
-      //TODO: Create function to send email
+      // send mail with defined transport object
+      await transporter.sendMail({
+        from: '"Reestablecer contraseña" <abinassar@gmail.com>', // sender address
+        to: user.email, // list of receivers
+        subject: "Enlace para reestablecer tu contraseña", // Subject line
+        html: `
+        <b>Por favor haz click en este enlace para cambiar tu contraseña:</b>
+        <a href="${verificationLink}">${verificationLink}</a>
+        <p> Este enlace tiene una validez de 30 minutos</p>
+        `, // html body
+      });
 
     } catch (error) {
       emailStatus = error;
@@ -118,7 +129,7 @@ class AuthController {
       return res.status(400).json({message: 'Something goes wrong!'});
     }
 
-    res.json({ message, info: emailStatus, test: verificationLink});
+    res.json({ message, info: emailStatus});
 
   };
 
