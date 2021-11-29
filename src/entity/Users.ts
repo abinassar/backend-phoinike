@@ -4,7 +4,8 @@ import { Entity,
          Column } from 'typeorm';
 import { MinLength, 
          IsNotEmpty, 
-         IsEmail } from 'class-validator';
+         IsEmail, 
+         IsOptional} from 'class-validator';
 import * as bcrypt from 'bcryptjs';
 
 @Entity()
@@ -45,6 +46,11 @@ export class Users {
 
   @Column()
   whatsappNumber: string;
+
+  @Column()
+  @IsOptional()
+  @IsNotEmpty()
+  resetToken: string;
 
   hashPassword(): void {
     const salt = bcrypt.genSaltSync(10);
