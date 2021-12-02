@@ -9,7 +9,7 @@ export class UserController {
     let users;
 
     try {
-      users = await userRepository.find({ select: ['id', 'username', 'role', 'whatsappNumber', 'email'] });
+      users = await userRepository.find({ select: ['id', 'role', 'firstName', 'lastName', 'whatsappNumber', 'email'] });
     } catch (e) {
       res.status(404).json({ message: 'Somenthing goes wrong!' });
     }
@@ -33,8 +33,10 @@ export class UserController {
   };
 
   static new = async (req: Request, res: Response) => {
-    const { username, 
-            firstName,
+
+    console.log("user obtained ", req.body);
+
+    const { firstName,
             lastName, 
             password, 
             role, 
@@ -42,7 +44,6 @@ export class UserController {
             whatsappNumber } = req.body;
     const user = new Users();
 
-    user.username = username;
     user.firstName = firstName;
     user.lastName = lastName;
     user.password = password;
@@ -64,17 +65,19 @@ export class UserController {
       user.hashPassword();
       await userRepository.save(user);
     } catch (e) {
-      return res.status(409).json({ message: 'Username already exist' });
+      return res.status(409).json({ message: 'Email already exist' });
     }
     // All ok
-    res.send('User created');
+    res.status(200).json({ 
+      ok: true,
+      message: 'User created successfully!' 
+    });
   };
 
   static edit = async (req: Request, res: Response) => {
     let user;
     const { id } = req.params;
-    const { username,
-            firstName,
+    const { firstName,
             lastName, 
             role, 
             email, 
@@ -84,7 +87,6 @@ export class UserController {
     // Try get user
     try {
       user = await userRepository.findOneOrFail(id);
-      user.username = username;
       user.firstName = firstName;
       user.lastName = lastName;
       user.role = role;
@@ -104,7 +106,7 @@ export class UserController {
     try {
       await userRepository.save(user);
     } catch (e) {
-      return res.status(409).json({ message: 'Username already in use' });
+      return res.status(409).json({ message: 'Email already in use' });
     }
 
     res.status(201).json({ message: 'User update' });

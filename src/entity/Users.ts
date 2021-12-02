@@ -9,17 +9,17 @@ import { MinLength,
 import * as bcrypt from 'bcryptjs';
 
 @Entity()
-@Unique(['username'])
+// @Unique(['username'])
 @Unique(['email'])
 
 export class Users {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  @MinLength(6)
-  @IsNotEmpty()
-  username: string;
+  // @Column()
+  // @MinLength(6)
+  // @IsNotEmpty()
+  // username: string;
 
   @Column()
   @IsNotEmpty()
@@ -49,7 +49,6 @@ export class Users {
 
   @Column()
   @IsOptional()
-  @IsNotEmpty()
   resetToken: string;
 
   hashPassword(): void {

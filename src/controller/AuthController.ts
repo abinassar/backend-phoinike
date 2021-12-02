@@ -20,7 +20,7 @@ class AuthController {
     try {
       user = await userRepository.findOneOrFail({ where: { email } });
     } catch (e) {
-      return res.status(400).json({ message: ' Email or password incorecct!' });
+      return res.status(400).json({ message: ' Email or password incorrect!' });
     }
 
     // Check password
