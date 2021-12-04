@@ -1,10 +1,10 @@
 {
   "type": "mysql",
-  "host": "localhost",
+  "host": "prueba.vnzservers.com",
   "port": 3306,
-  "username": "root",
-  "password": "",
-  "database": "test",
+  "username": "pruebavnz_test",
+  "password": "abinassar123",
+  "database": "pruebavnz_test",
   "synchronize": true,
   "logging": false,
   "entities": ["src/entity/**/*.ts"],
@@ -16,3 +16,5 @@
     "subscribersDir": "src/subscriber"
   }
 }
+
+

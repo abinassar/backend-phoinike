@@ -7,11 +7,15 @@ import { validate } from 'class-validator';
 import { transporter } from '../config/mailer';
 
 class AuthController {
+
   static login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
     if (!(email && password)) {
-      return res.status(400).json({ message: ' Email & Password are required!' });
+      return res.status(400).json({ 
+        ok: false,
+        message: ' Email & Password are required!'
+      });
     }
 
     const userRepository = getRepository(Users);
@@ -20,25 +24,42 @@ class AuthController {
     try {
       user = await userRepository.findOneOrFail({ where: { email } });
     } catch (e) {
-      return res.status(400).json({ message: ' Email or password incorrect!' });
+      return res.status(400).json({ 
+        ok: false,
+        message: ' Email or password incorrect!' 
+      });
     }
 
     // Check password
     if (!user.checkPassword(password)) {
-      return res.status(400).json({ message: 'Email or Password are incorrect!' });
+      return res.status(400).json({ 
+        ok: false,
+        message: 'Email or Password are incorrect!' 
+      });
     }
 
-    const token = jwt.sign({ userId: user.id, email: user.email }, config.jwtSecret, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id, email: user.email }, config.jwtSecret, { expiresIn: '500h' });
 
-    res.json({ message: 'OK', token, userId: user.id, role: user.role });
+    res.json({ 
+      ok: true,
+      message: 'Login successfully!', 
+      token, 
+      userId: user.id, 
+      role: user.role 
+    });
   };
 
   static changePassword = async (req: Request, res: Response) => {
     const { userId } = res.locals.jwtPayload;
-    const { oldPassword, newPassword } = req.body;
+    const { oldPassword, 
+            newPassword 
+          } = req.body;
 
     if (!(oldPassword && newPassword)) {
-      res.status(400).json({ message: 'Old password & new password are required' });
+      res.status(400).json({ 
+        ok: false,
+        message: 'Old password & new password are required' 
+      });
     }
 
     const userRepository = getRepository(Users);
@@ -47,11 +68,17 @@ class AuthController {
     try {
       user = await userRepository.findOneOrFail(userId);
     } catch (e) {
-      res.status(400).json({ message: 'Somenthing goes wrong!' });
+      res.status(400).json({ 
+        ok: false,
+        message: 'Somenthing goes wrong!' 
+      });
     }
 
     if (!user.checkPassword(oldPassword)) {
-      return res.status(401).json({ message: 'Check your old Password' });
+      return res.status(401).json({ 
+        ok: false,
+        message: 'Check your old Password' 
+      });
     }
 
     user.password = newPassword;
@@ -59,21 +86,30 @@ class AuthController {
     const errors = await validate(user, validationOps);
 
     if (errors.length > 0) {
-      return res.status(400).json(errors);
+      return res.status(400).json({
+        ok: false,
+        message: errors
+      });
     }
 
     // Hash password
     user.hashPassword();
     userRepository.save(user);
 
-    res.json({ message: 'Password change!' });
+    res.json({ 
+      ok: true,
+      message: 'Password changed successfully!' 
+    });
   };
 
   static forgotPassword = async (req: Request, res: Response) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({message: 'Email is required!'});
+      return res.status(400).json({
+        ok: false,
+        message: 'Email is required!'
+      });
     }
 
     const message = 'Check your email for a link to reset your password.';
@@ -94,12 +130,12 @@ class AuthController {
       user.resetToken = token;
       
     } catch (error) {
-      return res.json({message});
+      return res.json({
+        ok: false,
+        message: error
+      });
     }
 
-    //TODO: sendEmail to change password
-
-    
     try {
 
       // send mail with defined transport object
@@ -116,7 +152,10 @@ class AuthController {
 
     } catch (error) {
       emailStatus = error;
-      return res.status(400).json({message: 'Something goes wrong!'});
+      return res.status(400).json({
+        ok: false,
+        message: 'Something goes wrong!'
+      });
     }
 
     //Save user in database
@@ -126,11 +165,17 @@ class AuthController {
       await userRepository.save(user);
     } catch (error) {
       emailStatus = error;
-      return res.status(400).json({message: 'Something goes wrong!'});
+      return res.status(400).json({
+        ok: false,
+        message: 'Something goes wrong!'
+      });
     }
 
-    res.json({ message, info: emailStatus});
-
+    res.json({ 
+      ok: true,
+      message, 
+      info: emailStatus
+    });
   };
 
   static createNewPassword = async (req: Request, res: Response) => {
@@ -141,7 +186,10 @@ class AuthController {
     // Verified if all fields are sended
 
     if (!(newPassword && resetToken)) {
-      return res.status(400).json({message: 'All fields are required'})
+      return res.status(400).json({
+        ok: false,
+        message: 'All fields are required'
+      })
     }
 
     const userRepository = getRepository(Users);
@@ -155,7 +203,10 @@ class AuthController {
       user = await userRepository.findOneOrFail({where: {resetToken}});
 
     } catch (error) {
-      return res.status(401).json({message: 'error 1'});
+      return res.status(401).json({
+        ok: false,
+        message: error
+      });
     }
 
     // If get user validate user and change password
@@ -165,7 +216,10 @@ class AuthController {
     const errors = await validate(user, validateOptions);
 
     if (errors.length > 0) {
-      return res.status(400).json(errors);
+      return res.status(400).json({
+        ok: false,
+        message: errors
+      });
     }
 
     try {
@@ -173,12 +227,15 @@ class AuthController {
       user.hashPassword();
       await userRepository.save(user);
     } catch (error) {
-      return res.status(401).json({ message: 'error 2'});
+      return res.status(401).json({ 
+        ok: false,
+        message: error});
     }
 
-    res.json({ message: 'Password changed successfully!'});
-
-
+    res.json({ 
+      ok: true,
+      message: 'Password changed successfully!'
+    });
   }
 
 

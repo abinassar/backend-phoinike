@@ -4,6 +4,7 @@ import { Users } from '../entity/Users';
 import { validate } from 'class-validator';
 
 export class UserController {
+
   static getAll = async (req: Request, res: Response) => {
     const userRepository = getRepository(Users);
     let users;
@@ -17,7 +18,10 @@ export class UserController {
     if (users.length > 0) {
       res.send(users);
     } else {
-      res.status(404).json({ message: 'Not result' });
+      res.status(404).json({ 
+        ok: false,
+        message: 'Not result obtained' 
+      });
     }
   };
 
@@ -28,20 +32,22 @@ export class UserController {
       const user = await userRepository.findOneOrFail(id);
       res.send(user);
     } catch (e) {
-      res.status(404).json({ message: 'Not result' });
+      res.status(404).json({ 
+        ok: false,
+        message: 'Not result obtained' 
+      });
     }
   };
 
   static new = async (req: Request, res: Response) => {
-
-    console.log("user obtained ", req.body);
 
     const { firstName,
             lastName, 
             password, 
             role, 
             email, 
-            whatsappNumber } = req.body;
+            whatsappNumber,
+            resetToken } = req.body;
     const user = new Users();
 
     user.firstName = firstName;
@@ -50,12 +56,16 @@ export class UserController {
     user.role = role;
     user.email = email;
     user.whatsappNumber = whatsappNumber;
+    user.resetToken = resetToken;
 
     // Validate
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(user, validationOpt);
     if (errors.length > 0) {
-      return res.status(400).json(errors);
+      return res.status(400).json({
+        ok: false,
+        message: errors
+      });
     }
 
     // TODO: HASH PASSWORD
@@ -65,7 +75,10 @@ export class UserController {
       user.hashPassword();
       await userRepository.save(user);
     } catch (e) {
-      return res.status(409).json({ message: 'Email already exist' });
+      return res.status(409).json({
+        ok: false,
+        message: 'Email already exist' 
+      });
     }
     // All ok
     res.status(200).json({ 
@@ -93,23 +106,35 @@ export class UserController {
       user.email = email;
       user.whatsappNumber = whatsappNumber;
     } catch (e) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ 
+        ok: false,
+        message: 'User not found' 
+      });
     }
     const validationOpt = { validationError: { target: false, value: false } };
     const errors = await validate(user, validationOpt);
 
     if (errors.length > 0) {
-      return res.status(400).json(errors);
+      return res.status(400).json({
+        ok: false,
+        message: errors
+      });
     }
 
     // Try to save user
     try {
       await userRepository.save(user);
     } catch (e) {
-      return res.status(409).json({ message: 'Email already in use' });
+      return res.status(409).json({ 
+        ok: false,
+        message: 'Email already in use' 
+      });
     }
 
-    res.status(201).json({ message: 'User update' });
+    res.status(201).json({ 
+      ok: true,
+      message: 'User updated successfully!' 
+    });
   };
 
   static delete = async (req: Request, res: Response) => {
@@ -120,12 +145,18 @@ export class UserController {
     try {
       user = await userRepository.findOneOrFail(id);
     } catch (e) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ 
+        ok: false,
+        message: 'User not found' 
+      });
     }
 
     // Remove user
     userRepository.delete(id);
-    res.status(201).json({ message: ' User deleted' });
+    res.status(201).json({ 
+      ok: true,
+      message: 'User deleted successfully!' 
+    });
   };
 }
 
