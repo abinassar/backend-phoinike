@@ -1,10 +1,9 @@
 import { Logger } from "./Logger";
-import { QueryRunner } from "../";
+import { QueryRunner } from "../query-runner/QueryRunner";
 /**
  * Performs logging of the events in TypeORM via debug library.
  */
 export declare class DebugLogger implements Logger {
-    private debug;
     private debugQueryLog;
     private debugQueryError;
     private debugQuerySlow;

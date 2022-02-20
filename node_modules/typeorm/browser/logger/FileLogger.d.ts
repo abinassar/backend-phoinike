@@ -1,3 +1,4 @@
+import { LoggerOptions, FileLoggerOptions } from "./LoggerOptions";
 import { QueryRunner } from "../query-runner/QueryRunner";
 import { Logger } from "./Logger";
 /**
@@ -6,7 +7,8 @@ import { Logger } from "./Logger";
  */
 export declare class FileLogger implements Logger {
     private options?;
-    constructor(options?: boolean | "all" | ("error" | "log" | "info" | "warn" | "query" | "schema" | "migration")[] | undefined);
+    private fileLoggerOptions?;
+    constructor(options?: LoggerOptions | undefined, fileLoggerOptions?: FileLoggerOptions | undefined);
     /**
      * Logs query and parameters used in it.
      */

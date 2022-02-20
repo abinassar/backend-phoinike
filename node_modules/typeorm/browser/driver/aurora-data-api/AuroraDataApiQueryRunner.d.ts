@@ -1,3 +1,4 @@
+
 import { QueryRunner } from "../../query-runner/QueryRunner";
 import { TableColumn } from "../../schema-builder/table/TableColumn";
 import { Table } from "../../schema-builder/table/Table";
@@ -20,11 +21,12 @@ export declare class AuroraDataApiQueryRunner extends BaseQueryRunner implements
      * Database driver used by connection.
      */
     driver: AuroraDataApiDriver;
+    protected client: any;
     /**
      * Promise used to obtain a database connection from a pool for a first time.
      */
     protected databaseConnectionPromise: Promise<any>;
-    constructor(driver: AuroraDataApiDriver);
+    constructor(driver: AuroraDataApiDriver, client: any);
     /**
      * Creates/uses database connection from the connection pool to perform further operations.
      * Returns obtained database connection.
@@ -52,7 +54,7 @@ export declare class AuroraDataApiQueryRunner extends BaseQueryRunner implements
     /**
      * Executes a raw SQL query.
      */
-    query(query: string, parameters?: any[]): Promise<any>;
+    query(query: string, parameters?: any[], useStructuredResult?: boolean): Promise<any>;
     /**
      * Returns raw data stream.
      */
@@ -71,9 +73,17 @@ export declare class AuroraDataApiQueryRunner extends BaseQueryRunner implements
      */
     hasDatabase(database: string): Promise<boolean>;
     /**
+     * Loads currently using database
+     */
+    getCurrentDatabase(): Promise<string>;
+    /**
      * Checks if schema with the given name exist.
      */
     hasSchema(schema: string): Promise<boolean>;
+    /**
+     * Loads currently using database schema
+     */
+    getCurrentSchema(): Promise<string>;
     /**
      * Checks if table with the given name exist in the database.
      */
@@ -93,7 +103,7 @@ export declare class AuroraDataApiQueryRunner extends BaseQueryRunner implements
     /**
      * Creates a new table schema.
      */
-    createSchema(schema: string, ifNotExist?: boolean): Promise<void>;
+    createSchema(schemaPath: string, ifNotExist?: boolean): Promise<void>;
     /**
      * Drops table schema.
      */
@@ -148,7 +158,7 @@ export declare class AuroraDataApiQueryRunner extends BaseQueryRunner implements
     /**
      * Drops the columns in the table.
      */
-    dropColumns(tableOrName: Table | string, columns: TableColumn[]): Promise<void>;
+    dropColumns(tableOrName: Table | string, columns: TableColumn[] | string[]): Promise<void>;
     /**
      * Creates a new primary key.
      */
@@ -252,15 +262,11 @@ export declare class AuroraDataApiQueryRunner extends BaseQueryRunner implements
      * (because it can clear all your database).
      */
     clearDatabase(database?: string): Promise<void>;
-    /**
-     * Returns current database.
-     */
-    protected getCurrentDatabase(): Promise<string>;
-    protected loadViews(viewNames: string[]): Promise<View[]>;
+    protected loadViews(viewNames?: string[]): Promise<View[]>;
     /**
      * Loads all tables (with given names) from the database and creates a Table from them.
      */
-    protected loadTables(tableNames: string[]): Promise<Table[]>;
+    protected loadTables(tableNames?: string[]): Promise<Table[]>;
     /**
      * Builds create table sql
      */
@@ -303,16 +309,20 @@ export declare class AuroraDataApiQueryRunner extends BaseQueryRunner implements
      * Builds drop foreign key sql.
      */
     protected dropForeignKeySql(table: Table, foreignKeyOrName: TableForeignKey | string): Query;
-    protected parseTableName(target: Table | string): {
-        database: string | undefined;
-        tableName: string;
-    };
+    /**
+     * Escapes a given comment so it's safe to include in a query.
+     */
+    protected escapeComment(comment?: string): string;
     /**
      * Escapes given table or view path.
      */
-    protected escapePath(target: Table | View | string, disableEscape?: boolean): string;
+    protected escapePath(target: Table | View | string): string;
     /**
      * Builds a part of query to create/change a column.
      */
     protected buildCreateColumnSql(column: TableColumn, skipPrimary: boolean, skipName?: boolean): string;
+    /**
+     * Checks if column display width is by default.
+     */
+    protected isDefaultColumnWidth(table: Table, column: TableColumn, width: number): boolean;
 }

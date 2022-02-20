@@ -98,6 +98,10 @@ export declare class MetadataArgsStorage {
         propertyName: string;
     }>(array: T[], target: (Function | string) | (Function | string)[]): T[];
     /**
+     * Filters given array by a given target or targets and prevents duplicate relation property names.
+     */
+    protected filterByTargetAndWithoutDuplicateRelationProperties<T extends RelationMetadataArgs>(array: T[], target: (Function | string) | (Function | string)[]): T[];
+    /**
      * Filters given array by a given target or targets and prevents duplicate embedded property names.
      */
     protected filterByTargetAndWithoutDuplicateEmbeddedProperties<T extends EmbeddedMetadataArgs>(array: T[], target: (Function | string) | (Function | string)[]): T[];

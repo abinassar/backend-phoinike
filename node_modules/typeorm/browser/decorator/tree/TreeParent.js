@@ -1,10 +1,12 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 /**
  * Marks a entity property as a parent of the tree.
  * "Tree parent" indicates who owns (is a parent) of this entity in tree structure.
  */
-export function TreeParent() {
+export function TreeParent(options) {
     return function (object, propertyName) {
+        if (!options)
+            options = {};
         // now try to determine it its lazy relation
         var reflectedType = Reflect && Reflect.getMetadata ? Reflect.getMetadata("design:type", object, propertyName) : undefined;
         var isLazy = (reflectedType && typeof reflectedType.name === "string" && reflectedType.name.toLowerCase() === "promise") || false;
@@ -15,7 +17,7 @@ export function TreeParent() {
             isLazy: isLazy,
             relationType: "many-to-one",
             type: function () { return object.constructor; },
-            options: {}
+            options: options
         });
     };
 }

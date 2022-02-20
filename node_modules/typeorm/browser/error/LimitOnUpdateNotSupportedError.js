@@ -1,18 +1,15 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when user tries to build an UPDATE query with LIMIT but the database does not support it.
 */
 var LimitOnUpdateNotSupportedError = /** @class */ (function (_super) {
-    tslib_1.__extends(LimitOnUpdateNotSupportedError, _super);
+    __extends(LimitOnUpdateNotSupportedError, _super);
     function LimitOnUpdateNotSupportedError() {
-        var _this = _super.call(this) || this;
-        _this.name = "LimitOnUpdateNotSupportedError";
-        Object.setPrototypeOf(_this, LimitOnUpdateNotSupportedError.prototype);
-        _this.message = "Your database does not support LIMIT on UPDATE statements.";
-        return _this;
+        return _super.call(this, "Your database does not support LIMIT on UPDATE statements.") || this;
     }
     return LimitOnUpdateNotSupportedError;
-}(Error));
+}(TypeORMError));
 export { LimitOnUpdateNotSupportedError };
 
 //# sourceMappingURL=LimitOnUpdateNotSupportedError.js.map

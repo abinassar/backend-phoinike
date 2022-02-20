@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 /**
  * Holds a number of children in the closure table of the column.
  *

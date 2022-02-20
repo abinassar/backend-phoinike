@@ -1,19 +1,21 @@
-import * as tslib_1 from "tslib";
-import { EntitySchema } from "../index";
+import { __extends } from "tslib";
+import { EntitySchema } from "../entity-schema/EntitySchema";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when repository for the given class is not found.
  */
 var RepositoryNotFoundError = /** @class */ (function (_super) {
-    tslib_1.__extends(RepositoryNotFoundError, _super);
+    __extends(RepositoryNotFoundError, _super);
     function RepositoryNotFoundError(connectionName, entityClass) {
         var _this = _super.call(this) || this;
-        _this.name = "RepositoryNotFoundError";
-        Object.setPrototypeOf(_this, RepositoryNotFoundError.prototype);
         var targetName;
         if (entityClass instanceof EntitySchema) {
             targetName = entityClass.options.name;
         }
         else if (typeof entityClass === "function") {
+            targetName = entityClass.name;
+        }
+        else if (typeof entityClass === "object" && "name" in entityClass) {
             targetName = entityClass.name;
         }
         else {
@@ -24,7 +26,7 @@ var RepositoryNotFoundError = /** @class */ (function (_super) {
         return _this;
     }
     return RepositoryNotFoundError;
-}(Error));
+}(TypeORMError));
 export { RepositoryNotFoundError };
 
 //# sourceMappingURL=RepositoryNotFoundError.js.map

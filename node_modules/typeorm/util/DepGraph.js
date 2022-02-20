@@ -5,9 +5,11 @@
  * We cant use a package itself because we want to package "everything-in-it" for the frontend users of TypeORM.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.DepGraph = void 0;
 /**
  * A simple dependency graph
  */
+var error_1 = require("../error");
 /**
  * Helper for creating a Depth-First-Search on
  * a set of edges.
@@ -30,7 +32,7 @@ function createDFS(edges, leavesOnly, result) {
             }
             else if (currentPath.indexOf(node) >= 0) {
                 currentPath.push(node);
-                throw new Error("Dependency Cycle Found: " + currentPath.join(" -> "));
+                throw new error_1.TypeORMError("Dependency Cycle Found: " + currentPath.join(" -> "));
             }
         });
         currentPath.pop();
@@ -93,7 +95,7 @@ var DepGraph = /** @class */ (function () {
             return this.nodes[node];
         }
         else {
-            throw new Error("Node does not exist: " + node);
+            throw new error_1.TypeORMError("Node does not exist: " + node);
         }
     };
     /**
@@ -104,7 +106,7 @@ var DepGraph = /** @class */ (function () {
             this.nodes[node] = data;
         }
         else {
-            throw new Error("Node does not exist: " + node);
+            throw new error_1.TypeORMError("Node does not exist: " + node);
         }
     };
     /**
@@ -113,10 +115,10 @@ var DepGraph = /** @class */ (function () {
      */
     DepGraph.prototype.addDependency = function (from, to) {
         if (!this.hasNode(from)) {
-            throw new Error("Node does not exist: " + from);
+            throw new error_1.TypeORMError("Node does not exist: " + from);
         }
         if (!this.hasNode(to)) {
-            throw new Error("Node does not exist: " + to);
+            throw new error_1.TypeORMError("Node does not exist: " + to);
         }
         if (this.outgoingEdges[from].indexOf(to) === -1) {
             this.outgoingEdges[from].push(to);
@@ -164,7 +166,7 @@ var DepGraph = /** @class */ (function () {
             return result;
         }
         else {
-            throw new Error("Node does not exist: " + node);
+            throw new error_1.TypeORMError("Node does not exist: " + node);
         }
     };
     /**
@@ -186,7 +188,7 @@ var DepGraph = /** @class */ (function () {
             return result;
         }
         else {
-            throw new Error("Node does not exist: " + node);
+            throw new error_1.TypeORMError("Node does not exist: " + node);
         }
     };
     /**

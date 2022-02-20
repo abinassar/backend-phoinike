@@ -1,5 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.IndexMetadata = void 0;
+var error_1 = require("../error");
 /**
  * Index metadata contains all information about table's index.
  */
@@ -76,7 +78,7 @@ var IndexMetadata = /** @class */ (function () {
                 columnPropertyPaths = this.givenColumnNames.map(function (columnName) {
                     if (_this.embeddedMetadata)
                         return _this.embeddedMetadata.propertyPath + "." + columnName;
-                    return columnName;
+                    return columnName.trim();
                 });
                 columnPropertyPaths.forEach(function (propertyPath) { return map[propertyPath] = 1; });
             }
@@ -103,7 +105,7 @@ var IndexMetadata = /** @class */ (function () {
                 }
                 var indexName = _this.givenName ? "\"" + _this.givenName + "\" " : "";
                 var entityName = _this.entityMetadata.targetName;
-                throw new Error("Index " + indexName + "contains column that is missing in the entity (" + entityName + "): " + propertyPath);
+                throw new error_1.TypeORMError("Index " + indexName + "contains column that is missing in the entity (" + entityName + "): " + propertyPath);
             })
                 .reduce(function (a, b) { return a.concat(b); });
         }
@@ -113,7 +115,7 @@ var IndexMetadata = /** @class */ (function () {
                 updatedMap[column.databasePath] = map[key];
             return updatedMap;
         }, {});
-        this.name = this.givenName ? this.givenName : namingStrategy.indexName(this.entityMetadata.tablePath, this.columns.map(function (column) { return column.databaseName; }), this.where);
+        this.name = this.givenName ? this.givenName : namingStrategy.indexName(this.entityMetadata.tableName, this.columns.map(function (column) { return column.databaseName; }), this.where);
         return this;
     };
     return IndexMetadata;

@@ -14,6 +14,7 @@ import { Query } from "../Query";
 import { IsolationLevel } from "../types/IsolationLevel";
 import { MssqlParameter } from "./MssqlParameter";
 import { SqlServerDriver } from "./SqlServerDriver";
+import { ReplicationMode } from "../types/ReplicationMode";
 /**
  * Runs queries on a single SQL Server database connection.
  */
@@ -22,15 +23,8 @@ export declare class SqlServerQueryRunner extends BaseQueryRunner implements Que
      * Database driver used by connection.
      */
     driver: SqlServerDriver;
-    /**
-     * Last executed query in a transaction.
-     * This is needed because in transaction mode mssql cannot execute parallel queries,
-     * that's why we store last executed query promise to wait it when we execute next query.
-     *
-     * @see https://github.com/patriksimek/node-mssql/issues/491
-     */
-    protected queryResponsibilityChain: Promise<any>[];
-    constructor(driver: SqlServerDriver, mode?: "master" | "slave");
+    private lock;
+    constructor(driver: SqlServerDriver, mode: ReplicationMode);
     /**
      * Creates/uses database connection from the connection pool to perform further operations.
      * Returns obtained database connection.
@@ -58,7 +52,7 @@ export declare class SqlServerQueryRunner extends BaseQueryRunner implements Que
     /**
      * Executes a given SQL query.
      */
-    query(query: string, parameters?: any[]): Promise<any>;
+    query(query: string, parameters?: any[], useStructuredResult?: boolean): Promise<any>;
     /**
      * Returns raw data stream.
      */
@@ -77,9 +71,17 @@ export declare class SqlServerQueryRunner extends BaseQueryRunner implements Que
      */
     hasDatabase(database: string): Promise<boolean>;
     /**
+     * Loads currently using database
+     */
+    getCurrentDatabase(): Promise<string>;
+    /**
      * Checks if schema with the given name exist.
      */
     hasSchema(schema: string): Promise<boolean>;
+    /**
+     * Loads currently using database schema
+     */
+    getCurrentSchema(): Promise<string>;
     /**
      * Checks if table with the given name exist in the database.
      */
@@ -156,7 +158,7 @@ export declare class SqlServerQueryRunner extends BaseQueryRunner implements Que
     /**
      * Drops the columns in the table.
      */
-    dropColumns(tableOrName: Table | string, columns: TableColumn[]): Promise<void>;
+    dropColumns(tableOrName: Table | string, columns: TableColumn[] | string[]): Promise<void>;
     /**
      * Creates a new primary key.
      */
@@ -258,19 +260,11 @@ export declare class SqlServerQueryRunner extends BaseQueryRunner implements Que
      * Removes all tables from the currently connected database.
      */
     clearDatabase(database?: string): Promise<void>;
-    /**
-     * Return current database.
-     */
-    protected getCurrentDatabase(): Promise<string>;
-    /**
-     * Return current schema.
-     */
-    protected getCurrentSchema(): Promise<string>;
-    protected loadViews(viewPaths: string[]): Promise<View[]>;
+    protected loadViews(viewPaths?: string[]): Promise<View[]>;
     /**
      * Loads all tables (with given names) from the database and creates a Table from them.
      */
-    protected loadTables(tableNames: string[]): Promise<Table[]>;
+    protected loadTables(tableNames?: string[]): Promise<Table[]>;
     /**
      * Builds and returns SQL for create table.
      */
@@ -332,12 +326,7 @@ export declare class SqlServerQueryRunner extends BaseQueryRunner implements Que
     /**
      * Escapes given table or View path.
      */
-    protected escapePath(target: Table | View | string, disableEscape?: boolean): string;
-    protected parseTableName(target: Table | View | string, schema?: string): {
-        database: string | undefined;
-        schema: string;
-        name: string;
-    };
+    protected escapePath(target: Table | View | string): string;
     /**
      * Concat database name and schema name to the foreign key name.
      * Needs because FK name is relevant to the schema and database.
@@ -355,6 +344,7 @@ export declare class SqlServerQueryRunner extends BaseQueryRunner implements Que
      * Builds a query for create column.
      */
     protected buildCreateColumnSql(table: Table, column: TableColumn, skipIdentity: boolean, createDefault: boolean): string;
+    protected isEnumCheckConstraint(name: string): boolean;
     /**
      * Converts MssqlParameter into real mssql parameter type.
      */

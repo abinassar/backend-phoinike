@@ -1,18 +1,16 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when required driver's package is not installed.
  */
 var DriverPackageNotInstalledError = /** @class */ (function (_super) {
-    tslib_1.__extends(DriverPackageNotInstalledError, _super);
+    __extends(DriverPackageNotInstalledError, _super);
     function DriverPackageNotInstalledError(driverName, packageName) {
-        var _this = _super.call(this) || this;
-        _this.name = "DriverPackageNotInstalledError";
-        Object.setPrototypeOf(_this, DriverPackageNotInstalledError.prototype);
-        _this.message = driverName + " package has not been found installed. Try to install it: npm install " + packageName + " --save";
-        return _this;
+        return _super.call(this, driverName + " package has not been found installed. " +
+            ("Try to install it: npm install " + packageName + " --save")) || this;
     }
     return DriverPackageNotInstalledError;
-}(Error));
+}(TypeORMError));
 export { DriverPackageNotInstalledError };
 
 //# sourceMappingURL=DriverPackageNotInstalledError.js.map

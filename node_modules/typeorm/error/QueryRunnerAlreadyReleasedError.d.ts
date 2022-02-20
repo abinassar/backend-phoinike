@@ -1,6 +1,4 @@
-/**
- */
-export declare class QueryRunnerAlreadyReleasedError extends Error {
-    name: string;
+import { TypeORMError } from "./TypeORMError";
+export declare class QueryRunnerAlreadyReleasedError extends TypeORMError {
     constructor();
 }

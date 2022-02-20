@@ -1,7 +1,5 @@
 import { EntityMetadata } from "../metadata/EntityMetadata";
-/**
- */
-export declare class MissingDeleteDateColumnError extends Error {
-    name: string;
+import { TypeORMError } from "./TypeORMError";
+export declare class MissingDeleteDateColumnError extends TypeORMError {
     constructor(entityMetadata: EntityMetadata);
 }

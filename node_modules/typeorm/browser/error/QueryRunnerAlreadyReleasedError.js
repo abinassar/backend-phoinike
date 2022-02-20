@@ -1,17 +1,12 @@
-import * as tslib_1 from "tslib";
-/**
- */
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 var QueryRunnerAlreadyReleasedError = /** @class */ (function (_super) {
-    tslib_1.__extends(QueryRunnerAlreadyReleasedError, _super);
+    __extends(QueryRunnerAlreadyReleasedError, _super);
     function QueryRunnerAlreadyReleasedError() {
-        var _this = _super.call(this) || this;
-        _this.name = "QueryRunnerAlreadyReleasedError";
-        Object.setPrototypeOf(_this, QueryRunnerAlreadyReleasedError.prototype);
-        _this.message = "Query runner already released. Cannot run queries anymore.";
-        return _this;
+        return _super.call(this, "Query runner already released. Cannot run queries anymore.") || this;
     }
     return QueryRunnerAlreadyReleasedError;
-}(Error));
+}(TypeORMError));
 export { QueryRunnerAlreadyReleasedError };
 
 //# sourceMappingURL=QueryRunnerAlreadyReleasedError.js.map

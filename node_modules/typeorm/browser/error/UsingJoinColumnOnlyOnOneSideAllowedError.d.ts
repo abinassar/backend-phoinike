@@ -1,8 +1,6 @@
 import { EntityMetadata } from "../metadata/EntityMetadata";
 import { RelationMetadata } from "../metadata/RelationMetadata";
-/**
- */
-export declare class UsingJoinColumnOnlyOnOneSideAllowedError extends Error {
-    name: string;
+import { TypeORMError } from "./TypeORMError";
+export declare class UsingJoinColumnOnlyOnOneSideAllowedError extends TypeORMError {
     constructor(entityMetadata: EntityMetadata, relation: RelationMetadata);
 }

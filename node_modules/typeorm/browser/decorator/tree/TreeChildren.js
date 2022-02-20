@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 /**
  * Marks a entity property as a children of the tree.
  * "Tree children" will contain all children (bind) of this entity.

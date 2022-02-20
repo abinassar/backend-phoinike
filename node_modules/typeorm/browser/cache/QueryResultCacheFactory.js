@@ -1,5 +1,6 @@
 import { RedisQueryResultCache } from "./RedisQueryResultCache";
 import { DbQueryResultCache } from "./DbQueryResultCache";
+import { TypeORMError } from "../error/TypeORMError";
 /**
  * Caches query result into Redis database.
  */
@@ -18,7 +19,7 @@ var QueryResultCacheFactory = /** @class */ (function () {
      */
     QueryResultCacheFactory.prototype.create = function () {
         if (!this.connection.options.cache)
-            throw new Error("To use cache you need to enable it in connection options by setting cache: true or providing some caching options. Example: { host: ..., username: ..., cache: true }");
+            throw new TypeORMError("To use cache you need to enable it in connection options by setting cache: true or providing some caching options. Example: { host: ..., username: ..., cache: true }");
         var cache = this.connection.options.cache;
         if (cache.provider && typeof cache.provider === "function") {
             return cache.provider(this.connection);

@@ -1,19 +1,16 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown if custom repository was not found.
  */
 var CustomRepositoryNotFoundError = /** @class */ (function (_super) {
-    tslib_1.__extends(CustomRepositoryNotFoundError, _super);
+    __extends(CustomRepositoryNotFoundError, _super);
     function CustomRepositoryNotFoundError(repository) {
-        var _this = _super.call(this) || this;
-        _this.name = "CustomRepositoryNotFoundError";
-        Object.setPrototypeOf(_this, CustomRepositoryNotFoundError.prototype);
-        _this.message = "Custom repository " + (repository instanceof Function ? repository.name : repository.constructor.name) + " was not found. " +
-            "Did you forgot to put @EntityRepository decorator on it?";
-        return _this;
+        return _super.call(this, "Custom repository " + (repository instanceof Function ? repository.name : repository.constructor.name) + " was not found. " +
+            "Did you forgot to put @EntityRepository decorator on it?") || this;
     }
     return CustomRepositoryNotFoundError;
-}(Error));
+}(TypeORMError));
 export { CustomRepositoryNotFoundError };
 
 //# sourceMappingURL=CustomRepositoryNotFoundError.js.map

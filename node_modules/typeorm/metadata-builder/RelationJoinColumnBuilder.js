@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.RelationJoinColumnBuilder = void 0;
 var MysqlDriver_1 = require("../driver/mysql/MysqlDriver");
 var ColumnMetadata_1 = require("../metadata/ColumnMetadata");
 var UniqueMetadata_1 = require("../metadata/UniqueMetadata");
 var ForeignKeyMetadata_1 = require("../metadata/ForeignKeyMetadata");
 var OracleDriver_1 = require("../driver/oracle/OracleDriver");
 var AuroraDataApiDriver_1 = require("../driver/aurora-data-api/AuroraDataApiDriver");
+var error_1 = require("../error");
 /**
  * Builds join column for the many-to-one and one-to-one owner relations.
  *
@@ -51,9 +53,9 @@ var RelationJoinColumnBuilder = /** @class */ (function () {
      */
     RelationJoinColumnBuilder.prototype.build = function (joinColumns, relation) {
         var referencedColumns = this.collectReferencedColumns(joinColumns, relation);
-        if (!referencedColumns.length)
-            return { foreignKey: undefined, uniqueConstraint: undefined }; // this case is possible only for one-to-one non owning side
         var columns = this.collectColumns(joinColumns, relation, referencedColumns);
+        if (!referencedColumns.length || !relation.createForeignKeyConstraints)
+            return { foreignKey: undefined, columns: columns, uniqueConstraint: undefined }; // this case is possible for one-to-one non owning side and relations with createForeignKeyConstraints = false
         var foreignKey = new ForeignKeyMetadata_1.ForeignKeyMetadata({
             entityMetadata: relation.entityMetadata,
             referencedEntityMetadata: relation.inverseEntityMetadata,
@@ -66,21 +68,21 @@ var RelationJoinColumnBuilder = /** @class */ (function () {
         });
         // Oracle does not allow both primary and unique constraints on the same column
         if (this.connection.driver instanceof OracleDriver_1.OracleDriver && columns.every(function (column) { return column.isPrimary; }))
-            return { foreignKey: foreignKey, uniqueConstraint: undefined };
+            return { foreignKey: foreignKey, columns: columns, uniqueConstraint: undefined };
         // CockroachDB requires UNIQUE constraints on referenced columns
         if (referencedColumns.length > 0 && relation.isOneToOne) {
             var uniqueConstraint = new UniqueMetadata_1.UniqueMetadata({
                 entityMetadata: relation.entityMetadata,
                 columns: foreignKey.columns,
                 args: {
-                    name: this.connection.namingStrategy.relationConstraintName(relation.entityMetadata.tablePath, foreignKey.columns.map(function (c) { return c.databaseName; })),
+                    name: this.connection.namingStrategy.relationConstraintName(relation.entityMetadata.tableName, foreignKey.columns.map(function (c) { return c.databaseName; })),
                     target: relation.entityMetadata.target,
                 }
             });
             uniqueConstraint.build(this.connection.namingStrategy);
-            return { foreignKey: foreignKey, uniqueConstraint: uniqueConstraint };
+            return { foreignKey: foreignKey, columns: columns, uniqueConstraint: uniqueConstraint };
         }
-        return { foreignKey: foreignKey, uniqueConstraint: undefined };
+        return { foreignKey: foreignKey, columns: columns, uniqueConstraint: undefined };
     };
     // -------------------------------------------------------------------------
     // Protected Methods
@@ -99,7 +101,7 @@ var RelationJoinColumnBuilder = /** @class */ (function () {
             return joinColumns.map(function (joinColumn) {
                 var referencedColumn = relation.inverseEntityMetadata.ownColumns.find(function (column) { return column.propertyName === joinColumn.referencedColumnName; }); // todo: can we also search in relations?
                 if (!referencedColumn)
-                    throw new Error("Referenced column " + joinColumn.referencedColumnName + " was not found in entity " + relation.inverseEntityMetadata.name);
+                    throw new error_1.TypeORMError("Referenced column " + joinColumn.referencedColumnName + " was not found in entity " + relation.inverseEntityMetadata.name);
                 return referencedColumn;
             });
         }
@@ -141,8 +143,10 @@ var RelationJoinColumnBuilder = /** @class */ (function () {
                             zerofill: referencedColumn.zerofill,
                             unsigned: referencedColumn.unsigned,
                             comment: referencedColumn.comment,
+                            enum: referencedColumn.enum,
+                            enumName: referencedColumn.enumName,
                             primary: relation.isPrimary,
-                            nullable: relation.isNullable
+                            nullable: relation.isNullable,
                         }
                     }
                 });

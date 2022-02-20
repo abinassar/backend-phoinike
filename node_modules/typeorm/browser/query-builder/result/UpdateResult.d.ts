@@ -1,8 +1,10 @@
 import { ObjectLiteral } from "../../common/ObjectLiteral";
+import { QueryResult } from "../../query-runner/QueryResult";
 /**
  * Result object returned by UpdateQueryBuilder execution.
  */
 export declare class UpdateResult {
+    static from(queryResult: QueryResult): UpdateResult;
     /**
      * Raw SQL result returned by executed query.
      */

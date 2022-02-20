@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 import { CannotReflectMethodParameterTypeError } from "../../error/CannotReflectMethodParameterTypeError";
 /**
  * Injects transaction's repository into the method wrapped with @Transaction decorator.

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.SubjectChangedColumnsComputer = void 0;
 var DateUtils_1 = require("../util/DateUtils");
 var OrmUtils_1 = require("../util/OrmUtils");
 var ApplyValueTransformers_1 = require("../util/ApplyValueTransformers");
@@ -52,8 +53,10 @@ var SubjectChangedColumnsComputer = /** @class */ (function () {
                 return;
             // if there is no database entity then all columns are treated as new, e.g. changed
             if (subject.databaseEntity) {
+                // skip transform database value for json / jsonb for comparison later on
+                var shouldTransformDatabaseEntity = column.type !== "json" && column.type !== "jsonb";
                 // get database value of the column
-                var databaseValue = column.getEntityValue(subject.databaseEntity, true);
+                var databaseValue = column.getEntityValue(subject.databaseEntity, shouldTransformDatabaseEntity);
                 // filter out "relational columns" only in the case if there is a relation object in entity
                 if (column.relationMetadata) {
                     var value = column.relationMetadata.getEntityValue(subject.entity);
@@ -110,8 +113,15 @@ var SubjectChangedColumnsComputer = /** @class */ (function () {
                     }
                 }
                 // if value is not changed - then do nothing
-                if (normalizedValue === databaseValue)
-                    return;
+                if (normalizedValue instanceof Buffer && databaseValue instanceof Buffer) {
+                    if (normalizedValue.equals(databaseValue)) {
+                        return;
+                    }
+                }
+                else {
+                    if (normalizedValue === databaseValue)
+                        return;
+                }
             }
             subject.diffColumns.push(column);
             subject.changeMaps.push({

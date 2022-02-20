@@ -1,19 +1,14 @@
-import * as tslib_1 from "tslib";
-/**
- */
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 var MetadataAlreadyExistsError = /** @class */ (function (_super) {
-    tslib_1.__extends(MetadataAlreadyExistsError, _super);
+    __extends(MetadataAlreadyExistsError, _super);
     function MetadataAlreadyExistsError(metadataType, constructor, propertyName) {
-        var _this = _super.call(this) || this;
-        _this.name = "MetadataAlreadyExistsError";
-        Object.setPrototypeOf(_this, MetadataAlreadyExistsError.prototype);
-        _this.message = metadataType + " metadata already exists for the class constructor " + JSON.stringify(constructor) +
+        return _super.call(this, metadataType + " metadata already exists for the class constructor " + JSON.stringify(constructor) +
             (propertyName ? " on property " + propertyName : ". If you previously renamed or moved entity class, make sure" +
-                " that compiled version of old entity class source wasn't left in the compiler output directory.");
-        return _this;
+                " that compiled version of old entity class source wasn't left in the compiler output directory.")) || this;
     }
     return MetadataAlreadyExistsError;
-}(Error));
+}(TypeORMError));
 export { MetadataAlreadyExistsError };
 
 //# sourceMappingURL=MetadataAlreadyExistsError.js.map

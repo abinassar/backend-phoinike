@@ -9,12 +9,14 @@ import { transporter } from '../config/mailer';
 class AuthController {
 
   static login = async (req: Request, res: Response) => {
+    
     const { email, password } = req.body;
 
     if (!(email && password)) {
-      return res.status(400).json({ 
+      // return res.json({ 
+      return res.json({ 
         ok: false,
-        message: ' Email & Password are required!'
+        message: ' Email & Contraseña son requeridos!'
       });
     }
 
@@ -24,17 +26,24 @@ class AuthController {
     try {
       user = await userRepository.findOneOrFail({ where: { email } });
     } catch (e) {
-      return res.status(400).json({ 
+      return res.json({ 
         ok: false,
-        message: ' Email or password incorrect!' 
+        message: 'Contraseña o correo incorrecto!' 
       });
     }
 
     // Check password
     if (!user.checkPassword(password)) {
-      return res.status(400).json({ 
+      return res.json({ 
         ok: false,
-        message: 'Email or Password are incorrect!' 
+        message: 'Contraseña o correo incorrecto!' 
+      });
+    }
+
+    if (user.status === 'Pending') {
+      return res.json({ 
+        ok: false,
+        message: 'Usuario no activado!' 
       });
     }
 
@@ -42,10 +51,12 @@ class AuthController {
 
     res.json({ 
       ok: true,
-      message: 'Login successfully!', 
+      message: 'Logueado exitosamente!', 
       token, 
       userId: user.id, 
-      role: user.role 
+      role: user.role,
+      firstName: user.firstName,
+      lastName: user.lastName
     });
   };
 
@@ -56,9 +67,9 @@ class AuthController {
           } = req.body;
 
     if (!(oldPassword && newPassword)) {
-      res.status(400).json({ 
+      res.json({ 
         ok: false,
-        message: 'Old password & new password are required' 
+        message: 'Contraseña antigua y nueva contraseña son requeridas!' 
       });
     }
 
@@ -68,16 +79,17 @@ class AuthController {
     try {
       user = await userRepository.findOneOrFail(userId);
     } catch (e) {
-      res.status(400).json({ 
+      res.json({ 
         ok: false,
-        message: 'Somenthing goes wrong!' 
+        message: 'Error fatal de servidor!' 
       });
     }
 
     if (!user.checkPassword(oldPassword)) {
-      return res.status(401).json({ 
+      // return res.status(401).json({ 
+      return res.json({ 
         ok: false,
-        message: 'Check your old Password' 
+        message: 'Verifica tu antigua contraseña' 
       });
     }
 
@@ -86,7 +98,7 @@ class AuthController {
     const errors = await validate(user, validationOps);
 
     if (errors.length > 0) {
-      return res.status(400).json({
+      return res.json({
         ok: false,
         message: errors
       });
@@ -98,7 +110,7 @@ class AuthController {
 
     res.json({ 
       ok: true,
-      message: 'Password changed successfully!' 
+      message: 'Contraseña cambiada exitosamente!' 
     });
   };
 
@@ -106,13 +118,14 @@ class AuthController {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({
+      return res.json({
         ok: false,
-        message: 'Email is required!'
+        message: 'El correo es requerido!'
       });
     }
 
-    const message = 'Check your email for a link to reset your password.';
+    // const message = 'Check your email for a link to reset your password.';
+    const message = 'Se envió un link a tu email para resetear tu contraseña.';
     let verificationLink;
     let emailStatus = 'OK';
 
@@ -126,13 +139,13 @@ class AuthController {
       // Find user email in database 
       user = await userRepository.findOneOrFail({where: {email}});
       const token = jwt.sign({userId: user.id, email: user.email}, config.jwtSecretReset, {expiresIn: '30m'});
-      verificationLink = `http://localhost:4200/new-password/${token}`;
+      verificationLink = `https://phoinike-administration.web.app/new-password/${token}`;
       user.resetToken = token;
       
     } catch (error) {
       return res.json({
         ok: false,
-        message: error
+        message: 'Correo no existe en base de datos!'
       });
     }
 
@@ -152,9 +165,10 @@ class AuthController {
 
     } catch (error) {
       emailStatus = error;
-      return res.status(400).json({
+      return res.json({
         ok: false,
-        message: 'Something goes wrong!'
+        // message: 'Something goes wrong!'
+        message: 'Ocurrió un problema!'
       });
     }
 
@@ -165,9 +179,10 @@ class AuthController {
       await userRepository.save(user);
     } catch (error) {
       emailStatus = error;
-      return res.status(400).json({
+      return res.json({
         ok: false,
-        message: 'Something goes wrong!'
+        // message: 'Something goes wrong!'
+        message: 'Ocurrió un problema!'
       });
     }
 
@@ -186,7 +201,7 @@ class AuthController {
     // Verified if all fields are sended
 
     if (!(newPassword && resetToken)) {
-      return res.status(400).json({
+      return res.json({
         ok: false,
         message: 'All fields are required'
       })
@@ -203,9 +218,13 @@ class AuthController {
       user = await userRepository.findOneOrFail({where: {resetToken}});
 
     } catch (error) {
-      return res.status(401).json({
+      // return res.status(401).json({
+      //   ok: false,
+      //   message: error
+      // });
+      return res.json({
         ok: false,
-        message: error
+        message: 'El token enviado ha expirado!'
       });
     }
 
@@ -216,7 +235,7 @@ class AuthController {
     const errors = await validate(user, validateOptions);
 
     if (errors.length > 0) {
-      return res.status(400).json({
+      return res.json({
         ok: false,
         message: errors
       });
@@ -234,7 +253,8 @@ class AuthController {
 
     res.json({ 
       ok: true,
-      message: 'Password changed successfully!'
+      // message: 'Password changed successfully!'
+      message: 'Contraseña cambiada exitosamente!'
     });
   }
 

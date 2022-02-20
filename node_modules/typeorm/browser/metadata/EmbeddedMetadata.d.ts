@@ -67,6 +67,11 @@ export declare class EmbeddedMetadata {
      */
     embeddeds: EmbeddedMetadata[];
     /**
+     * Indicates if the entity should be instantiated using the constructor
+     * or via allocating a new object via `Object.create()`.
+     */
+    isAlwaysUsingConstructor: boolean;
+    /**
      * Indicates if this embedded is in array mode.
      *
      * This option works only in mongodb.
@@ -141,7 +146,9 @@ export declare class EmbeddedMetadata {
     /**
      * Creates a new embedded object.
      */
-    create(): any;
+    create(options?: {
+        fromDeserializer?: boolean;
+    }): any;
     build(connection: Connection): this;
     protected buildPartialPrefix(): string[];
     protected buildPrefix(connection: Connection): string;

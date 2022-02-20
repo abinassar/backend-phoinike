@@ -1,3 +1,4 @@
+import { TypeORMError } from "../error";
 /**
  * Contains all information about entity's relation count.
  */
@@ -46,7 +47,7 @@ var RelationIdMetadata = /** @class */ (function () {
         var propertyPath = this.relationNameOrFactory instanceof Function ? this.relationNameOrFactory(this.entityMetadata.propertiesMap) : this.relationNameOrFactory;
         var relation = this.entityMetadata.findRelationWithPropertyPath(propertyPath);
         if (!relation)
-            throw new Error("Cannot find relation " + propertyPath + ". Wrong relation specified for @RelationId decorator.");
+            throw new TypeORMError("Cannot find relation " + propertyPath + ". Wrong relation specified for @RelationId decorator.");
         this.relation = relation;
     };
     return RelationIdMetadata;

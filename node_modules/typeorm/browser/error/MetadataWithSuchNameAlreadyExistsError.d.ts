@@ -1,6 +1,4 @@
-/**
- */
-export declare class MetadataWithSuchNameAlreadyExistsError extends Error {
-    name: string;
+import { TypeORMError } from "./TypeORMError";
+export declare class MetadataWithSuchNameAlreadyExistsError extends TypeORMError {
     constructor(metadataType: string, name: string);
 }

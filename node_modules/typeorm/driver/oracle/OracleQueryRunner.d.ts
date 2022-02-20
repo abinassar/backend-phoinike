@@ -13,6 +13,7 @@ import { BaseQueryRunner } from "../../query-runner/BaseQueryRunner";
 import { TableCheck } from "../../schema-builder/table/TableCheck";
 import { IsolationLevel } from "../types/IsolationLevel";
 import { TableExclusion } from "../../schema-builder/table/TableExclusion";
+import { ReplicationMode } from "../types/ReplicationMode";
 /**
  * Runs queries on a single oracle database connection.
  */
@@ -25,7 +26,7 @@ export declare class OracleQueryRunner extends BaseQueryRunner implements QueryR
      * Promise used to obtain a database connection for a first time.
      */
     protected databaseConnectionPromise: Promise<any>;
-    constructor(driver: OracleDriver, mode?: "master" | "slave");
+    constructor(driver: OracleDriver, mode: ReplicationMode);
     /**
      * Creates/uses database connection from the connection pool to perform further operations.
      * Returns obtained database connection.
@@ -53,7 +54,7 @@ export declare class OracleQueryRunner extends BaseQueryRunner implements QueryR
     /**
      * Executes a given SQL query.
      */
-    query(query: string, parameters?: any[]): Promise<any>;
+    query(query: string, parameters?: any[], useStructuredResult?: boolean): Promise<any>;
     /**
      * Returns raw data stream.
      */
@@ -72,9 +73,17 @@ export declare class OracleQueryRunner extends BaseQueryRunner implements QueryR
      */
     hasDatabase(database: string): Promise<boolean>;
     /**
+     * Loads currently using database
+     */
+    getCurrentDatabase(): Promise<undefined>;
+    /**
      * Checks if schema with the given name exist.
      */
     hasSchema(schema: string): Promise<boolean>;
+    /**
+     * Loads currently using database schema
+     */
+    getCurrentSchema(): Promise<string>;
     /**
      * Checks if table with the given name exist in the database.
      */
@@ -94,7 +103,7 @@ export declare class OracleQueryRunner extends BaseQueryRunner implements QueryR
     /**
      * Creates a new table schema.
      */
-    createSchema(schemas: string, ifNotExist?: boolean): Promise<void>;
+    createSchema(schemaPath: string, ifNotExist?: boolean): Promise<void>;
     /**
      * Drops table schema.
      */
@@ -118,7 +127,7 @@ export declare class OracleQueryRunner extends BaseQueryRunner implements QueryR
     /**
      * Renames the given table.
      */
-    renameTable(oldTableOrName: Table | string, newTableOrName: Table | string): Promise<void>;
+    renameTable(oldTableOrName: Table | string, newTableName: string): Promise<void>;
     /**
      * Creates a new column from the column in the table.
      */
@@ -149,7 +158,7 @@ export declare class OracleQueryRunner extends BaseQueryRunner implements QueryR
     /**
      * Drops the columns in the table.
      */
-    dropColumns(tableOrName: Table | string, columns: TableColumn[]): Promise<void>;
+    dropColumns(tableOrName: Table | string, columns: TableColumn[] | string[]): Promise<void>;
     /**
      * Creates a new primary key.
      */
@@ -251,11 +260,11 @@ export declare class OracleQueryRunner extends BaseQueryRunner implements QueryR
      * Removes all tables from the currently connected database.
      */
     clearDatabase(): Promise<void>;
-    protected loadViews(viewNames: string[]): Promise<View[]>;
+    protected loadViews(viewNames?: string[]): Promise<View[]>;
     /**
      * Loads all tables (with given names) from the database and creates a Table from them.
      */
-    protected loadTables(tableNames: string[]): Promise<Table[]>;
+    protected loadTables(tableNames?: string[]): Promise<Table[]>;
     /**
      * Builds and returns SQL for create table.
      */
@@ -269,11 +278,11 @@ export declare class OracleQueryRunner extends BaseQueryRunner implements QueryR
     /**
      * Builds drop view sql.
      */
-    protected dropViewSql(viewOrPath: View | string): Query;
+    protected dropViewSql(view: View): Query;
     /**
      * Builds remove view sql.
      */
-    protected deleteViewDefinitionSql(viewOrPath: View | string): Query;
+    protected deleteViewDefinitionSql(view: View): Query;
     /**
      * Builds create index sql.
      */
@@ -318,4 +327,8 @@ export declare class OracleQueryRunner extends BaseQueryRunner implements QueryR
      * Builds a query for create column.
      */
     protected buildCreateColumnSql(column: TableColumn): string;
+    /**
+     * Escapes given table or view path.
+     */
+    protected escapePath(target: Table | View | string): string;
 }

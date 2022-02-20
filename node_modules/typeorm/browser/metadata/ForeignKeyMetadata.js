@@ -43,7 +43,7 @@ var ForeignKeyMetadata = /** @class */ (function () {
         this.columnNames = this.columns.map(function (column) { return column.databaseName; });
         this.referencedColumnNames = this.referencedColumns.map(function (column) { return column.databaseName; });
         this.referencedTablePath = this.referencedEntityMetadata.tablePath;
-        this.name = namingStrategy.foreignKeyName(this.entityMetadata.tablePath, this.columnNames, this.referencedTablePath, this.referencedColumnNames);
+        this.name = namingStrategy.foreignKeyName(this.entityMetadata.tableName, this.columnNames, this.referencedEntityMetadata.tableName, this.referencedColumnNames);
     };
     return ForeignKeyMetadata;
 }());

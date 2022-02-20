@@ -31,6 +31,10 @@ export interface OracleConnectionCredentialsOptions {
      */
     readonly sid?: string;
     /**
+     * Connection Service Name.
+     */
+    readonly serviceName?: string;
+    /**
      * Embedded TNS Connection String
      */
     readonly connectString?: string;

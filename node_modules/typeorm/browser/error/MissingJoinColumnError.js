@@ -1,12 +1,9 @@
-import * as tslib_1 from "tslib";
-/**
- */
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 var MissingJoinColumnError = /** @class */ (function (_super) {
-    tslib_1.__extends(MissingJoinColumnError, _super);
+    __extends(MissingJoinColumnError, _super);
     function MissingJoinColumnError(entityMetadata, relation) {
         var _this = _super.call(this) || this;
-        _this.name = "MissingJoinColumnError";
-        Object.setPrototypeOf(_this, MissingJoinColumnError.prototype);
         if (relation.inverseRelation) {
             _this.message = "JoinColumn is missing on both sides of " + entityMetadata.name + "#" + relation.propertyName + " and " +
                 (relation.inverseEntityMetadata.name + "#" + relation.inverseRelation.propertyName + " one-to-one relationship. ") +
@@ -19,7 +16,7 @@ var MissingJoinColumnError = /** @class */ (function (_super) {
         return _this;
     }
     return MissingJoinColumnError;
-}(Error));
+}(TypeORMError));
 export { MissingJoinColumnError };
 
 //# sourceMappingURL=MissingJoinColumnError.js.map

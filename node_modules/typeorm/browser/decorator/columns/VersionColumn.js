@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 /**
  * This column will store a number - version of the entity.
  * Every time your entity will be persisted, this number will be increased by one -

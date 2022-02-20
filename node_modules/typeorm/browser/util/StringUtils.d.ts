@@ -7,7 +7,6 @@ export declare function camelCase(str: string, firstCapital?: boolean): string;
 /**
  * Converts string into snake_case.
  *
- * @see https://regex101.com/r/QeSm2I/1
  */
 export declare function snakeCase(str: string): string;
 /**

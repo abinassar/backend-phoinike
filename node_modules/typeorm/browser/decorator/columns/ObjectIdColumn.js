@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 /**
  * Special type of column that is available only for MongoDB database.
  * Marks your entity's column to be an object id.

@@ -10,4 +10,8 @@ export declare class BroadcasterResult {
      * Promises returned by listeners and subscribers which needs to be awaited.
      */
     promises: Promise<any>[];
+    /**
+     * Wait for all promises to settle
+     */
+    wait(): Promise<BroadcasterResult>;
 }

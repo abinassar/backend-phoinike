@@ -4,6 +4,14 @@ import { Connection, SelectQueryBuilder } from "../..";
  */
 export interface ViewOptions {
     /**
+     * Database name that this table resides in if it applies.
+     */
+    database?: string;
+    /**
+     * Schema name that this table resides in if it applies.
+     */
+    schema?: string;
+    /**
      * View name.
      */
     name: string;

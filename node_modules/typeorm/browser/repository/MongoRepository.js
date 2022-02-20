@@ -1,10 +1,11 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
 import { Repository } from "./Repository";
+import { TypeORMError } from "../error/TypeORMError";
 /**
  * Repository used to manage mongodb documents of a single entity type.
  */
 var MongoRepository = /** @class */ (function (_super) {
-    tslib_1.__extends(MongoRepository, _super);
+    __extends(MongoRepository, _super);
     function MongoRepository() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
@@ -16,14 +17,14 @@ var MongoRepository = /** @class */ (function (_super) {
      * Calling this method will return an error.
      */
     MongoRepository.prototype.query = function (query, parameters) {
-        throw new Error("Queries aren't supported by MongoDB.");
+        throw new TypeORMError("Queries aren't supported by MongoDB.");
     };
     /**
      * Using Query Builder with MongoDB is not supported yet.
      * Calling this method will return an error.
      */
     MongoRepository.prototype.createQueryBuilder = function (alias, queryRunner) {
-        throw new Error("Query Builder is not supported by MongoDB.");
+        throw new TypeORMError("Query Builder is not supported by MongoDB.");
     };
     /**
      * Finds entities that match given find options or conditions.

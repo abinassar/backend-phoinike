@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 /**
  * This column will store a creation date of the inserted object.
  * Creation date is generated and inserted only once,

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UpdateResult = void 0;
 /**
  * Result object returned by UpdateQueryBuilder execution.
  */
@@ -16,6 +17,12 @@ var UpdateResult = /** @class */ (function () {
          */
         this.generatedMaps = [];
     }
+    UpdateResult.from = function (queryResult) {
+        var result = new this();
+        result.raw = queryResult.records;
+        result.affected = queryResult.affected;
+        return result;
+    };
     return UpdateResult;
 }());
 exports.UpdateResult = UpdateResult;

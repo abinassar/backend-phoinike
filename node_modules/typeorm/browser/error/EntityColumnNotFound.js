@@ -1,18 +1,12 @@
-import * as tslib_1 from "tslib";
-/**
- *
- */
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 var EntityColumnNotFound = /** @class */ (function (_super) {
-    tslib_1.__extends(EntityColumnNotFound, _super);
+    __extends(EntityColumnNotFound, _super);
     function EntityColumnNotFound(propertyPath) {
-        var _this = _super.call(this) || this;
-        _this.name = "EntityColumnNotFound";
-        Object.setPrototypeOf(_this, EntityColumnNotFound.prototype);
-        _this.message = "No entity column \"" + propertyPath + "\" was found.";
-        return _this;
+        return _super.call(this, "No entity column \"" + propertyPath + "\" was found.") || this;
     }
     return EntityColumnNotFound;
-}(Error));
+}(TypeORMError));
 export { EntityColumnNotFound };
 
 //# sourceMappingURL=EntityColumnNotFound.js.map

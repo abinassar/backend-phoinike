@@ -1,7 +1,7 @@
 import { Driver } from "./Driver";
 /**
-* Common driver utility functions.
-*/
+ * Common driver utility functions.
+ */
 export declare class DriverUtils {
     /**
      * Normalizes and builds a new driver options.
@@ -11,20 +11,41 @@ export declare class DriverUtils {
         useSid: boolean;
     }): any;
     /**
-     * Builds column alias from given alias name and column name.
+     * buildDriverOptions for MongodDB only to support replica set
+     */
+    static buildMongoDBDriverOptions(options: any, buildOptions?: {
+        useSid: boolean;
+    }): any;
+    /**
+     * Joins and shortens alias if needed.
      *
-     * If alias length is greater than the limit (if any) allowed by the current
-     * driver, replaces it with a hashed string.
+     * If the alias length is greater than the limit allowed by the current
+     * driver, replaces it with a shortend string, if the shortend string
+     * is still too long, it will then hash the alias.
      *
      * @param driver Current `Driver`.
-     * @param alias Alias part.
-     * @param column Name of the column to be concatened to `alias`.
+     * @param buildOptions Optional settings.
+     * @param alias Alias parts.
      *
-     * @return An alias allowing to select/transform the target `column`.
+     * @return An alias that is no longer than the divers max alias length.
      */
-    static buildColumnAlias({ maxAliasLength }: Driver, alias: string, column: string): string;
+    static buildAlias({ maxAliasLength }: Driver, buildOptions: {
+        shorten?: boolean;
+        joiner?: string;
+    } | string, ...alias: string[]): string;
+    /**
+     * @deprecated use `buildAlias` instead.
+     */
+    static buildColumnAlias({ maxAliasLength }: Driver, buildOptions: {
+        shorten?: boolean;
+        joiner?: string;
+    } | string, ...alias: string[]): string;
     /**
      * Extracts connection data from the connection url.
      */
     private static parseConnectionUrl;
+    /**
+     * Extracts connection data from the connection url for MongoDB to support replica set.
+     */
+    private static parseMongoDBConnectionUrl;
 }

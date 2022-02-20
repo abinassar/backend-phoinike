@@ -1,6 +1,7 @@
-import * as tslib_1 from "tslib";
+import { __read } from "tslib";
 import { QueryBuilderUtils } from "../QueryBuilderUtils";
 import { ObjectUtils } from "../../util/ObjectUtils";
+import { TypeORMError } from "../../error/TypeORMError";
 var RelationCountAttribute = /** @class */ (function () {
     // -------------------------------------------------------------------------
     // Constructor
@@ -16,7 +17,7 @@ var RelationCountAttribute = /** @class */ (function () {
         get: function () {
             return this.relation.inverseEntityMetadata;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationCountAttribute.prototype, "parentAlias", {
@@ -28,10 +29,10 @@ var RelationCountAttribute = /** @class */ (function () {
          */
         get: function () {
             if (!QueryBuilderUtils.isAliasProperty(this.relationName))
-                throw new Error("Given value must be a string representation of alias property");
+                throw new TypeORMError("Given value must be a string representation of alias property");
             return this.relationName.split(".")[0];
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationCountAttribute.prototype, "relationProperty", {
@@ -44,18 +45,18 @@ var RelationCountAttribute = /** @class */ (function () {
          */
         get: function () {
             if (!QueryBuilderUtils.isAliasProperty(this.relationName))
-                throw new Error("Given value is a string representation of alias property");
+                throw new TypeORMError("Given value is a string representation of alias property");
             return this.relationName.split(".")[1];
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationCountAttribute.prototype, "junctionAlias", {
         get: function () {
-            var _a = tslib_1.__read(this.relationName.split("."), 2), parentAlias = _a[0], relationProperty = _a[1];
+            var _a = __read(this.relationName.split("."), 2), parentAlias = _a[0], relationProperty = _a[1];
             return parentAlias + "_" + relationProperty + "_rc";
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationCountAttribute.prototype, "relation", {
@@ -66,15 +67,15 @@ var RelationCountAttribute = /** @class */ (function () {
          */
         get: function () {
             if (!QueryBuilderUtils.isAliasProperty(this.relationName))
-                throw new Error("Given value is a string representation of alias property");
-            var _a = tslib_1.__read(this.relationName.split("."), 2), parentAlias = _a[0], propertyPath = _a[1];
+                throw new TypeORMError("Given value is a string representation of alias property");
+            var _a = __read(this.relationName.split("."), 2), parentAlias = _a[0], propertyPath = _a[1];
             var relationOwnerSelection = this.expressionMap.findAliasByName(parentAlias);
             var relation = relationOwnerSelection.metadata.findRelationWithPropertyPath(propertyPath);
             if (!relation)
-                throw new Error("Relation with property path " + propertyPath + " in entity was not found.");
+                throw new TypeORMError("Relation with property path " + propertyPath + " in entity was not found.");
             return relation;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationCountAttribute.prototype, "metadata", {
@@ -84,19 +85,19 @@ var RelationCountAttribute = /** @class */ (function () {
          */
         get: function () {
             if (!QueryBuilderUtils.isAliasProperty(this.relationName))
-                throw new Error("Given value is a string representation of alias property");
+                throw new TypeORMError("Given value is a string representation of alias property");
             var parentAlias = this.relationName.split(".")[0];
             var selection = this.expressionMap.findAliasByName(parentAlias);
             return selection.metadata;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationCountAttribute.prototype, "mapToPropertyPropertyName", {
         get: function () {
             return this.mapToProperty.split(".")[1];
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     return RelationCountAttribute;

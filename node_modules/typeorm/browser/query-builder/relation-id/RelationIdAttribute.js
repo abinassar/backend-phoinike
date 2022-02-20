@@ -1,6 +1,7 @@
-import * as tslib_1 from "tslib";
+import { __read } from "tslib";
 import { QueryBuilderUtils } from "../QueryBuilderUtils";
 import { ObjectUtils } from "../../util/ObjectUtils";
+import { TypeORMError } from "../../error/TypeORMError";
 /**
  * Stores all join relation id attributes which will be used to build a JOIN query.
  */
@@ -23,7 +24,7 @@ var RelationIdAttribute = /** @class */ (function () {
         get: function () {
             return this.relation.inverseEntityMetadata;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationIdAttribute.prototype, "parentAlias", {
@@ -35,10 +36,10 @@ var RelationIdAttribute = /** @class */ (function () {
          */
         get: function () {
             if (!QueryBuilderUtils.isAliasProperty(this.relationName))
-                throw new Error("Given value must be a string representation of alias property");
+                throw new TypeORMError("Given value must be a string representation of alias property");
             return this.relationName.substr(0, this.relationName.indexOf("."));
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationIdAttribute.prototype, "relationPropertyPath", {
@@ -51,10 +52,10 @@ var RelationIdAttribute = /** @class */ (function () {
          */
         get: function () {
             if (!QueryBuilderUtils.isAliasProperty(this.relationName))
-                throw new Error("Given value must be a string representation of alias property");
+                throw new TypeORMError("Given value must be a string representation of alias property");
             return this.relationName.substr(this.relationName.indexOf(".") + 1);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationIdAttribute.prototype, "relation", {
@@ -65,14 +66,14 @@ var RelationIdAttribute = /** @class */ (function () {
          */
         get: function () {
             if (!QueryBuilderUtils.isAliasProperty(this.relationName))
-                throw new Error("Given value must be a string representation of alias property");
+                throw new TypeORMError("Given value must be a string representation of alias property");
             var relationOwnerSelection = this.queryExpressionMap.findAliasByName(this.parentAlias);
             var relation = relationOwnerSelection.metadata.findRelationWithPropertyPath(this.relationPropertyPath);
             if (!relation)
-                throw new Error("Relation with property path " + this.relationPropertyPath + " in entity was not found.");
+                throw new TypeORMError("Relation with property path " + this.relationPropertyPath + " in entity was not found.");
             return relation;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationIdAttribute.prototype, "junctionAlias", {
@@ -80,10 +81,10 @@ var RelationIdAttribute = /** @class */ (function () {
          * Generates alias of junction table, whose ids we get.
          */
         get: function () {
-            var _a = tslib_1.__read(this.relationName.split("."), 2), parentAlias = _a[0], relationProperty = _a[1];
+            var _a = __read(this.relationName.split("."), 2), parentAlias = _a[0], relationProperty = _a[1];
             return parentAlias + "_" + relationProperty + "_rid";
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationIdAttribute.prototype, "junctionMetadata", {
@@ -94,21 +95,21 @@ var RelationIdAttribute = /** @class */ (function () {
         get: function () {
             return this.relation.junctionEntityMetadata;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationIdAttribute.prototype, "mapToPropertyParentAlias", {
         get: function () {
             return this.mapToProperty.substr(0, this.mapToProperty.indexOf("."));
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(RelationIdAttribute.prototype, "mapToPropertyPropertyPath", {
         get: function () {
             return this.mapToProperty.substr(this.mapToProperty.indexOf(".") + 1);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     return RelationIdAttribute;

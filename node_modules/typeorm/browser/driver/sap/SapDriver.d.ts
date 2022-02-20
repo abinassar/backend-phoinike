@@ -1,4 +1,4 @@
-import { ColumnType, Connection, EntityMetadata, ObjectLiteral, TableColumn } from "../..";
+import { ColumnType, Connection, EntityMetadata, ObjectLiteral, Table, TableColumn, TableForeignKey } from "../..";
 import { ColumnMetadata } from "../../metadata/ColumnMetadata";
 import { RdbmsSchemaBuilder } from "../../schema-builder/RdbmsSchemaBuilder";
 import { Driver } from "../Driver";
@@ -6,6 +6,8 @@ import { DataTypeDefaults } from "../types/DataTypeDefaults";
 import { MappedColumnTypes } from "../types/MappedColumnTypes";
 import { SapConnectionOptions } from "./SapConnectionOptions";
 import { SapQueryRunner } from "./SapQueryRunner";
+import { ReplicationMode } from "../types/ReplicationMode";
+import { View } from "../../schema-builder/view/View";
 /**
  * Organizes communication with SAP Hana DBMS.
  *
@@ -34,9 +36,13 @@ export declare class SapDriver implements Driver {
      */
     options: SapConnectionOptions;
     /**
-     * Master database used to perform all write queries.
+     * Database name used to perform all write queries.
      */
     database?: string;
+    /**
+     * Schema name used to perform all write queries.
+     */
+    schema?: string;
     /**
      * Indicates if replication is enabled.
      */
@@ -104,7 +110,7 @@ export declare class SapDriver implements Driver {
     /**
      * Creates a query runner used to execute database queries.
      */
-    createQueryRunner(mode?: "master" | "slave"): SapQueryRunner;
+    createQueryRunner(mode: ReplicationMode): SapQueryRunner;
     /**
      * Replaces parameters in the given sql with special escaping character
      * and an array of parameter names to be passed to a query.
@@ -116,9 +122,17 @@ export declare class SapDriver implements Driver {
     escape(columnName: string): string;
     /**
      * Build full table name with schema name and table name.
-     * E.g. "mySchema"."myTable"
+     * E.g. myDB.mySchema.myTable
      */
     buildTableName(tableName: string, schema?: string): string;
+    /**
+     * Parse a target table name or other types and return a normalized table definition.
+     */
+    parseTableName(target: EntityMetadata | Table | View | TableForeignKey | string): {
+        database?: string;
+        schema?: string;
+        tableName: string;
+    };
     /**
      * Prepares given value to a value to be persisted, based on its column type and metadata.
      */
@@ -139,7 +153,7 @@ export declare class SapDriver implements Driver {
     /**
      * Normalizes "default" value of the column.
      */
-    normalizeDefault(columnMetadata: ColumnMetadata): string;
+    normalizeDefault(columnMetadata: ColumnMetadata): string | undefined;
     /**
      * Normalizes "isUnique" value of the column.
      */
@@ -181,6 +195,10 @@ export declare class SapDriver implements Driver {
      * Returns true if driver supports uuid values generation on its own.
      */
     isUUIDGenerationSupported(): boolean;
+    /**
+     * Returns true if driver supports fulltext indices.
+     */
+    isFullTextColumnTypeSupported(): boolean;
     /**
      * Creates an escaped parameter.
      */

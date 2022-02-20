@@ -1,19 +1,16 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown if custom repository inherits Repository class however entity is not set in @EntityRepository decorator.
  */
 var CustomRepositoryCannotInheritRepositoryError = /** @class */ (function (_super) {
-    tslib_1.__extends(CustomRepositoryCannotInheritRepositoryError, _super);
+    __extends(CustomRepositoryCannotInheritRepositoryError, _super);
     function CustomRepositoryCannotInheritRepositoryError(repository) {
-        var _this = _super.call(this) || this;
-        _this.name = "CustomRepositoryCannotInheritRepositoryError";
-        Object.setPrototypeOf(_this, CustomRepositoryCannotInheritRepositoryError.prototype);
-        _this.message = "Custom entity repository " + (repository instanceof Function ? repository.name : repository.constructor.name) + " " +
-            " cannot inherit Repository class without entity being set in the @EntityRepository decorator.";
-        return _this;
+        return _super.call(this, "Custom entity repository " + (repository instanceof Function ? repository.name : repository.constructor.name) + " " +
+            " cannot inherit Repository class without entity being set in the @EntityRepository decorator.") || this;
     }
     return CustomRepositoryCannotInheritRepositoryError;
-}(Error));
+}(TypeORMError));
 export { CustomRepositoryCannotInheritRepositoryError };
 
 //# sourceMappingURL=CustomRepositoryCannotInheritRepositoryError.js.map

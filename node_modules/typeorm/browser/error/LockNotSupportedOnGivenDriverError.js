@@ -1,18 +1,15 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when selected sql driver does not supports locking.
  */
 var LockNotSupportedOnGivenDriverError = /** @class */ (function (_super) {
-    tslib_1.__extends(LockNotSupportedOnGivenDriverError, _super);
+    __extends(LockNotSupportedOnGivenDriverError, _super);
     function LockNotSupportedOnGivenDriverError() {
-        var _this = _super.call(this) || this;
-        _this.name = "LockNotSupportedOnGivenDriverError";
-        Object.setPrototypeOf(_this, LockNotSupportedOnGivenDriverError.prototype);
-        _this.message = "Locking not supported on given driver.";
-        return _this;
+        return _super.call(this, "Locking not supported on given driver.") || this;
     }
     return LockNotSupportedOnGivenDriverError;
-}(Error));
+}(TypeORMError));
 export { LockNotSupportedOnGivenDriverError };
 
 //# sourceMappingURL=LockNotSupportedOnGivenDriverError.js.map

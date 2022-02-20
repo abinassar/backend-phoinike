@@ -21,7 +21,7 @@ var CheckMetadata = /** @class */ (function () {
      * Must be called after all entity metadata's properties map, columns and relations are built.
      */
     CheckMetadata.prototype.build = function (namingStrategy) {
-        this.name = this.givenName ? this.givenName : namingStrategy.checkConstraintName(this.entityMetadata.tablePath, this.expression);
+        this.name = this.givenName ? this.givenName : namingStrategy.checkConstraintName(this.entityMetadata.tableName, this.expression);
         return this;
     };
     return CheckMetadata;

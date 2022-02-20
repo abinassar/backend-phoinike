@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../";
+import { getMetadataArgsStorage } from "../globals";
 /**
  * Used to declare a class as a custom repository.
  * Custom repository can manage some specific entity or just be generic.

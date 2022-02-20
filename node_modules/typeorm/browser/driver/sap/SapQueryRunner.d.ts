@@ -1,3 +1,4 @@
+
 import { ReadStream } from "../../platform/PlatformTools";
 import { BaseQueryRunner } from "../../query-runner/BaseQueryRunner";
 import { QueryRunner } from "../../query-runner/QueryRunner";
@@ -12,6 +13,7 @@ import { View } from "../../schema-builder/view/View";
 import { Query } from "../Query";
 import { IsolationLevel } from "../types/IsolationLevel";
 import { SapDriver } from "./SapDriver";
+import { ReplicationMode } from "../types/ReplicationMode";
 /**
  * Runs queries on a single SQL Server database connection.
  */
@@ -21,16 +23,11 @@ export declare class SapQueryRunner extends BaseQueryRunner implements QueryRunn
      */
     driver: SapDriver;
     /**
-     * Last executed query in a transaction.
-     * This is needed because we cannot rely on parallel queries because we use second query
-     * to select CURRENT_IDENTITY_VALUE()
-     */
-    protected queryResponsibilityChain: Promise<any>[];
-    /**
      * Promise used to obtain a database connection from a pool for a first time.
      */
     protected databaseConnectionPromise: Promise<any>;
-    constructor(driver: SapDriver, mode?: "master" | "slave");
+    private lock;
+    constructor(driver: SapDriver, mode: ReplicationMode);
     /**
      * Creates/uses database connection from the connection pool to perform further operations.
      * Returns obtained database connection.
@@ -58,7 +55,7 @@ export declare class SapQueryRunner extends BaseQueryRunner implements QueryRunn
     /**
      * Executes a given SQL query.
      */
-    query(query: string, parameters?: any[]): Promise<any>;
+    query(query: string, parameters?: any[], useStructuredResult?: boolean): Promise<any>;
     /**
      * Returns raw data stream.
      */
@@ -77,9 +74,17 @@ export declare class SapQueryRunner extends BaseQueryRunner implements QueryRunn
      */
     hasDatabase(database: string): Promise<boolean>;
     /**
+     * Returns current database.
+     */
+    getCurrentDatabase(): Promise<string>;
+    /**
      * Checks if schema with the given name exist.
      */
     hasSchema(schema: string): Promise<boolean>;
+    /**
+     * Returns current schema.
+     */
+    getCurrentSchema(): Promise<string>;
     /**
      * Checks if table with the given name exist in the database.
      */
@@ -99,7 +104,7 @@ export declare class SapQueryRunner extends BaseQueryRunner implements QueryRunn
     /**
      * Creates a new table schema.
      */
-    createSchema(schema: string, ifNotExist?: boolean): Promise<void>;
+    createSchema(schemaPath: string, ifNotExist?: boolean): Promise<void>;
     /**
      * Drops table schema
      */
@@ -154,7 +159,7 @@ export declare class SapQueryRunner extends BaseQueryRunner implements QueryRunn
     /**
      * Drops the columns in the table.
      */
-    dropColumns(tableOrName: Table | string, columns: TableColumn[]): Promise<void>;
+    dropColumns(tableOrName: Table | string, columns: TableColumn[] | string[]): Promise<void>;
     /**
      * Creates a new primary key.
      */
@@ -256,19 +261,11 @@ export declare class SapQueryRunner extends BaseQueryRunner implements QueryRunn
      * Removes all tables from the currently connected database.
      */
     clearDatabase(): Promise<void>;
-    /**
-     * Return current database.
-     */
-    protected getCurrentDatabase(): Promise<string>;
-    /**
-     * Return current schema.
-     */
-    protected getCurrentSchema(): Promise<string>;
-    protected loadViews(viewNames: string[]): Promise<View[]>;
+    protected loadViews(viewNames?: string[]): Promise<View[]>;
     /**
      * Loads all tables (with given names) from the database and creates a Table from them.
      */
-    protected loadTables(tableNames: string[]): Promise<Table[]>;
+    protected loadTables(tableNames?: string[]): Promise<Table[]>;
     /**
      * Builds and returns SQL for create table.
      */
@@ -324,14 +321,7 @@ export declare class SapQueryRunner extends BaseQueryRunner implements QueryRunn
     /**
      * Escapes given table or view path.
      */
-    protected escapePath(target: Table | View | string, disableEscape?: boolean): string;
-    /**
-     * Returns object with table schema and table name.
-     */
-    protected parseTableName(target: Table | string): {
-        schema: string;
-        tableName: string;
-    };
+    protected escapePath(target: Table | View | string): string;
     /**
      * Concat database name and schema name to the foreign key name.
      * Needs because FK name is relevant to the schema and database.

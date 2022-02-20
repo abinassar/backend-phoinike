@@ -13,6 +13,7 @@ import { BaseQueryRunner } from "../../query-runner/BaseQueryRunner";
 import { TableCheck } from "../../schema-builder/table/TableCheck";
 import { IsolationLevel } from "../types/IsolationLevel";
 import { TableExclusion } from "../../schema-builder/table/TableExclusion";
+import { ReplicationMode } from "../types/ReplicationMode";
 /**
  * Runs queries on a single mysql database connection.
  */
@@ -25,7 +26,7 @@ export declare class MysqlQueryRunner extends BaseQueryRunner implements QueryRu
      * Promise used to obtain a database connection from a pool for a first time.
      */
     protected databaseConnectionPromise: Promise<any>;
-    constructor(driver: MysqlDriver, mode?: "master" | "slave");
+    constructor(driver: MysqlDriver, mode: ReplicationMode);
     /**
      * Creates/uses database connection from the connection pool to perform further operations.
      * Returns obtained database connection.
@@ -53,7 +54,7 @@ export declare class MysqlQueryRunner extends BaseQueryRunner implements QueryRu
     /**
      * Executes a raw SQL query.
      */
-    query(query: string, parameters?: any[]): Promise<any>;
+    query(query: string, parameters?: any[], useStructuredResult?: boolean): Promise<any>;
     /**
      * Returns raw data stream.
      */
@@ -72,9 +73,17 @@ export declare class MysqlQueryRunner extends BaseQueryRunner implements QueryRu
      */
     hasDatabase(database: string): Promise<boolean>;
     /**
+     * Loads currently using database
+     */
+    getCurrentDatabase(): Promise<string>;
+    /**
      * Checks if schema with the given name exist.
      */
     hasSchema(schema: string): Promise<boolean>;
+    /**
+     * Loads currently using database schema
+     */
+    getCurrentSchema(): Promise<string>;
     /**
      * Checks if table with the given name exist in the database.
      */
@@ -94,7 +103,7 @@ export declare class MysqlQueryRunner extends BaseQueryRunner implements QueryRu
     /**
      * Creates a new table schema.
      */
-    createSchema(schema: string, ifNotExist?: boolean): Promise<void>;
+    createSchema(schemaPath: string, ifNotExist?: boolean): Promise<void>;
     /**
      * Drops table schema.
      */
@@ -149,7 +158,7 @@ export declare class MysqlQueryRunner extends BaseQueryRunner implements QueryRu
     /**
      * Drops the columns in the table.
      */
-    dropColumns(tableOrName: Table | string, columns: TableColumn[]): Promise<void>;
+    dropColumns(tableOrName: Table | string, columns: TableColumn[] | string[]): Promise<void>;
     /**
      * Creates a new primary key.
      */
@@ -253,15 +262,11 @@ export declare class MysqlQueryRunner extends BaseQueryRunner implements QueryRu
      * (because it can clear all your database).
      */
     clearDatabase(database?: string): Promise<void>;
-    /**
-     * Returns current database.
-     */
-    protected getCurrentDatabase(): Promise<string>;
-    protected loadViews(viewNames: string[]): Promise<View[]>;
+    protected loadViews(viewNames?: string[]): Promise<View[]>;
     /**
      * Loads all tables (with given names) from the database and creates a Table from them.
      */
-    protected loadTables(tableNames: string[]): Promise<Table[]>;
+    protected loadTables(tableNames?: string[]): Promise<Table[]>;
     /**
      * Builds create table sql
      */
@@ -304,17 +309,21 @@ export declare class MysqlQueryRunner extends BaseQueryRunner implements QueryRu
      * Builds drop foreign key sql.
      */
     protected dropForeignKeySql(table: Table, foreignKeyOrName: TableForeignKey | string): Query;
-    protected parseTableName(target: Table | string): {
-        database: string | undefined;
-        tableName: string;
-    };
+    /**
+     * Escapes a given comment so it's safe to include in a query.
+     */
+    protected escapeComment(comment?: string): string;
     /**
      * Escapes given table or view path.
      */
-    protected escapePath(target: Table | View | string, disableEscape?: boolean): string;
+    protected escapePath(target: Table | View | string): string;
     /**
      * Builds a part of query to create/change a column.
      */
     protected buildCreateColumnSql(column: TableColumn, skipPrimary: boolean, skipName?: boolean): string;
     protected getVersion(): Promise<string>;
+    /**
+     * Checks if column display width is by default.
+     */
+    protected isDefaultColumnWidth(table: Table, column: TableColumn, width: number): boolean;
 }

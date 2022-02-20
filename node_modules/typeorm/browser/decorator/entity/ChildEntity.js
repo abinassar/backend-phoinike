@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 /**
  * Special type of the table used in the single-table inherited tables.
  */
@@ -10,7 +10,7 @@ export function ChildEntity(discriminatorValue) {
             type: "entity-child",
         });
         // register discriminator value if it was provided
-        if (discriminatorValue) {
+        if (typeof discriminatorValue !== 'undefined') {
             getMetadataArgsStorage().discriminatorValues.push({
                 target: target,
                 value: discriminatorValue

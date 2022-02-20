@@ -1,5 +1,5 @@
 import { Driver } from "../driver/Driver";
-export declare class TreeRepositoryNotSupportedError extends Error {
-    name: string;
+import { TypeORMError } from "./TypeORMError";
+export declare class TreeRepositoryNotSupportedError extends TypeORMError {
     constructor(driver: Driver);
 }

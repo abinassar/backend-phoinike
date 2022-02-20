@@ -11,6 +11,10 @@ import { DataTypeDefaults } from "../types/DataTypeDefaults";
 import { TableColumn } from "../../schema-builder/table/TableColumn";
 import { OracleConnectionCredentialsOptions } from "./OracleConnectionCredentialsOptions";
 import { EntityMetadata } from "../../metadata/EntityMetadata";
+import { ReplicationMode } from "../types/ReplicationMode";
+import { Table } from "../../schema-builder/table/Table";
+import { View } from "../../schema-builder/view/View";
+import { TableForeignKey } from "../../schema-builder/table/TableForeignKey";
 /**
  * Organizes communication with Oracle RDBMS.
  */
@@ -37,9 +41,13 @@ export declare class OracleDriver implements Driver {
      */
     options: OracleConnectionOptions;
     /**
-     * Master database used to perform all write queries.
+     * Database name used to perform all write queries.
      */
     database?: string;
+    /**
+     * Schema name used to perform all write queries.
+     */
+    schema?: string;
     /**
      * Indicates if replication is enabled.
      */
@@ -116,7 +124,7 @@ export declare class OracleDriver implements Driver {
     /**
      * Creates a query runner used to execute database queries.
      */
-    createQueryRunner(mode?: "master" | "slave"): OracleQueryRunner;
+    createQueryRunner(mode: ReplicationMode): OracleQueryRunner;
     /**
      * Replaces parameters in the given sql with special escaping character
      * and an array of parameter names to be passed to a query.
@@ -131,6 +139,14 @@ export declare class OracleDriver implements Driver {
      * Oracle does not support table schemas. One user can have only one schema.
      */
     buildTableName(tableName: string, schema?: string, database?: string): string;
+    /**
+     * Parse a target table name or other types and return a normalized table definition.
+     */
+    parseTableName(target: EntityMetadata | Table | View | TableForeignKey | string): {
+        database?: string;
+        schema?: string;
+        tableName: string;
+    };
     /**
      * Prepares given value to a value to be persisted, based on its column type and metadata.
      */
@@ -152,7 +168,7 @@ export declare class OracleDriver implements Driver {
     /**
      * Normalizes "default" value of the column.
      */
-    normalizeDefault(columnMetadata: ColumnMetadata): string;
+    normalizeDefault(columnMetadata: ColumnMetadata): string | undefined;
     /**
      * Normalizes "isUnique" value of the column.
      */
@@ -191,6 +207,10 @@ export declare class OracleDriver implements Driver {
      * Returns true if driver supports uuid values generation on its own.
      */
     isUUIDGenerationSupported(): boolean;
+    /**
+     * Returns true if driver supports fulltext indices.
+     */
+    isFullTextColumnTypeSupported(): boolean;
     /**
      * Creates an escaped parameter.
      */

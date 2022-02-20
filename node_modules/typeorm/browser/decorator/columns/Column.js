@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 import { ColumnTypeUndefinedError } from "../../error/ColumnTypeUndefinedError";
 /**
  * Column decorator is used to mark a specific class property as a table column.

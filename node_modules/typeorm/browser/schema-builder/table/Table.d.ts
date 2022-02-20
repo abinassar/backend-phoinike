@@ -12,8 +12,17 @@ import { TableExclusion } from "./TableExclusion";
  */
 export declare class Table {
     /**
-     * Contains database name, schema name and table name.
-     * E.g. "myDB"."mySchema"."myTable"
+     * Database name that this table resides in if it applies.
+     */
+    database?: string;
+    /**
+     * Schema name that this table resides in if it applies.
+     */
+    schema?: string;
+    /**
+     * May contain database name, schema name and table name, unless they're the current database.
+     *
+     * E.g. myDB.mySchema.myTable
      */
     name: string;
     /**
@@ -51,7 +60,7 @@ export declare class Table {
      */
     engine?: string;
     constructor(options?: TableOptions);
-    readonly primaryColumns: TableColumn[];
+    get primaryColumns(): TableColumn[];
     /**
      * Clones this table to a new table with all properties cloned.
      */

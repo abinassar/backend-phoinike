@@ -14,6 +14,9 @@ router.get('/:id', [checkJwt, checkRole(['admin'])], UserController.getById);
 // Create a new user
 router.post('/', UserController.new);
 
+// Create a new user
+router.post('/activate-user', UserController.activateUser);
+
 // Edit user
 router.patch('/:id', [checkJwt], UserController.edit);
 

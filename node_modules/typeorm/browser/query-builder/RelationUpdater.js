@@ -1,6 +1,7 @@
-import * as tslib_1 from "tslib";
+import { __awaiter, __generator } from "tslib";
 import { SapDriver } from "../driver/sap/SapDriver";
 import { OracleDriver } from "../driver/oracle/OracleDriver";
+import { TypeORMError } from "../error";
 /**
  * Allows to work with entity relations and perform specific operations with those relations.
  *
@@ -21,10 +22,10 @@ var RelationUpdater = /** @class */ (function () {
      * Performs set or add operation on a relation.
      */
     RelationUpdater.prototype.update = function (value) {
-        return tslib_1.__awaiter(this, void 0, void 0, function () {
+        return __awaiter(this, void 0, void 0, function () {
             var relation, updateSet, updateSet_1, ofs, parameters_1, conditions_1, condition, of_1, updateSet, junctionMetadata_1, ofs, values, firstColumnValues, secondColumnValues_1, bulkInserted_1;
             var _this = this;
-            return tslib_1.__generator(this, function (_a) {
+            return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         relation = this.expressionMap.relationMetadata;
@@ -77,7 +78,7 @@ var RelationUpdater = /** @class */ (function () {
                     case 4:
                         if (!(relation.isOneToOneNotOwner || relation.isOneToMany)) return [3 /*break*/, 6];
                         if (Array.isArray(this.expressionMap.of))
-                            throw new Error("You cannot update relations of multiple entities with the same related object. Provide a single entity into .of method.");
+                            throw new TypeORMError("You cannot update relations of multiple entities with the same related object. Provide a single entity into .of method.");
                         of_1 = this.expressionMap.of;
                         updateSet = relation.inverseRelation.joinColumns.reduce(function (updateSet, joinColumn) {
                             var relationValue = of_1 instanceof Object ? joinColumn.referencedColumn.getEntityValue(of_1) : of_1;

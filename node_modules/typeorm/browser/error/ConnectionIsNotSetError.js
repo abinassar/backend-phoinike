@@ -1,18 +1,15 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when user tries to execute operation that requires connection to be established.
  */
 var ConnectionIsNotSetError = /** @class */ (function (_super) {
-    tslib_1.__extends(ConnectionIsNotSetError, _super);
+    __extends(ConnectionIsNotSetError, _super);
     function ConnectionIsNotSetError(dbType) {
-        var _this = _super.call(this) || this;
-        _this.name = "ConnectionIsNotSetError";
-        Object.setPrototypeOf(_this, ConnectionIsNotSetError.prototype);
-        _this.message = "Connection with " + dbType + " database is not established. Check connection configuration.";
-        return _this;
+        return _super.call(this, "Connection with " + dbType + " database is not established. Check connection configuration.") || this;
     }
     return ConnectionIsNotSetError;
-}(Error));
+}(TypeORMError));
 export { ConnectionIsNotSetError };
 
 //# sourceMappingURL=ConnectionIsNotSetError.js.map

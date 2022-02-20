@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 /**
  * This column will store a delete date of the soft-deleted object.
  * This date is being updated each time you soft-delete the object.

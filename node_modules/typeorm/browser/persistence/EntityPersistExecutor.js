@@ -1,4 +1,4 @@
-import * as tslib_1 from "tslib";
+import { __awaiter, __generator, __values } from "tslib";
 import { MustBeEntityError } from "../error/MustBeEntityError";
 import { SubjectExecutor } from "./SubjectExecutor";
 import { CannotDetermineEntityError } from "../error/CannotDetermineEntityError";
@@ -9,7 +9,6 @@ import { ManyToManySubjectBuilder } from "./subject-builder/ManyToManySubjectBui
 import { SubjectDatabaseEntityLoader } from "./SubjectDatabaseEntityLoader";
 import { CascadesSubjectBuilder } from "./subject-builder/CascadesSubjectBuilder";
 import { OrmUtils } from "../util/OrmUtils";
-import { PromiseUtils } from "../util/PromiseUtils";
 /**
  * Persists a single entity or multiple entities - saves or removes them.
  */
@@ -32,31 +31,35 @@ var EntityPersistExecutor = /** @class */ (function () {
      * Executes persistence operation ob given entity or entities.
      */
     EntityPersistExecutor.prototype.execute = function () {
-        var _this = this;
-        // check if entity we are going to save is valid and is an object
-        if (!this.entity || !(this.entity instanceof Object))
-            return Promise.reject(new MustBeEntityError(this.mode, this.entity));
-        // we MUST call "fake" resolve here to make sure all properties of lazily loaded relations are resolved
-        return Promise.resolve().then(function () { return tslib_1.__awaiter(_this, void 0, void 0, function () {
-            var queryRunner, entities, entitiesInChunks, executors, executorsWithExecutableOperations, isTransactionStartedByUs, error_1, rollbackError_1;
+        return __awaiter(this, void 0, void 0, function () {
+            var queryRunner, oldQueryRunnerData, entities, entitiesInChunks, executors, executorsWithExecutableOperations, isTransactionStartedByUs, executorsWithExecutableOperations_1, executorsWithExecutableOperations_1_1, executor, e_1_1, error_1, rollbackError_1;
+            var e_1, _a;
             var _this = this;
-            return tslib_1.__generator(this, function (_a) {
-                switch (_a.label) {
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        queryRunner = this.queryRunner || this.connection.createQueryRunner("master");
-                        // save data in the query runner - this is useful functionality to share data from outside of the world
-                        // with third classes - like subscribers and listener methods
-                        if (this.options && this.options.data)
-                            queryRunner.data = this.options.data;
-                        _a.label = 1;
+                        // check if entity we are going to save is valid and is an object
+                        if (!this.entity || typeof this.entity !== "object")
+                            return [2 /*return*/, Promise.reject(new MustBeEntityError(this.mode, this.entity))];
+                        // we MUST call "fake" resolve here to make sure all properties of lazily loaded relations are resolved
+                        return [4 /*yield*/, Promise.resolve()];
                     case 1:
-                        _a.trys.push([1, , 15, 18]);
+                        // we MUST call "fake" resolve here to make sure all properties of lazily loaded relations are resolved
+                        _b.sent();
+                        queryRunner = this.queryRunner || this.connection.createQueryRunner();
+                        oldQueryRunnerData = queryRunner.data;
+                        if (this.options && this.options.data) {
+                            queryRunner.data = this.options.data;
+                        }
+                        _b.label = 2;
+                    case 2:
+                        _b.trys.push([2, , 22, 25]);
                         entities = Array.isArray(this.entity) ? this.entity : [this.entity];
                         entitiesInChunks = this.options && this.options.chunk && this.options.chunk > 0 ? OrmUtils.chunk(entities, this.options.chunk) : [entities];
-                        return [4 /*yield*/, Promise.all(entitiesInChunks.map(function (entities) { return tslib_1.__awaiter(_this, void 0, void 0, function () {
+                        return [4 /*yield*/, Promise.all(entitiesInChunks.map(function (entities) { return __awaiter(_this, void 0, void 0, function () {
                                 var subjects, cascadesSubjectBuilder;
                                 var _this = this;
-                                return tslib_1.__generator(this, function (_a) {
+                                return __generator(this, function (_a) {
                                     switch (_a.label) {
                                         case 0:
                                             subjects = [];
@@ -115,62 +118,81 @@ var EntityPersistExecutor = /** @class */ (function () {
                                     }
                                 });
                             }); }))];
-                    case 2:
-                        executors = _a.sent();
+                    case 3:
+                        executors = _b.sent();
                         executorsWithExecutableOperations = executors.filter(function (executor) { return executor.hasExecutableOperations; });
                         if (executorsWithExecutableOperations.length === 0)
                             return [2 /*return*/];
                         isTransactionStartedByUs = false;
-                        _a.label = 3;
-                    case 3:
-                        _a.trys.push([3, 9, , 14]);
-                        if (!!queryRunner.isTransactionActive) return [3 /*break*/, 5];
-                        if (!(!this.options || this.options.transaction !== false)) return [3 /*break*/, 5];
+                        _b.label = 4;
+                    case 4:
+                        _b.trys.push([4, 16, , 21]);
+                        if (!!queryRunner.isTransactionActive) return [3 /*break*/, 6];
+                        if (!(!this.options || this.options.transaction !== false)) return [3 /*break*/, 6];
                         isTransactionStartedByUs = true;
                         return [4 /*yield*/, queryRunner.startTransaction()];
-                    case 4:
-                        _a.sent();
-                        _a.label = 5;
-                    case 5: 
-                    // execute all persistence operations for all entities we have
-                    // console.time("executing subject executors...");
-                    return [4 /*yield*/, PromiseUtils.runInSequence(executorsWithExecutableOperations, function (executor) { return executor.execute(); })];
+                    case 5:
+                        _b.sent();
+                        _b.label = 6;
                     case 6:
-                        // execute all persistence operations for all entities we have
-                        // console.time("executing subject executors...");
-                        _a.sent();
-                        if (!(isTransactionStartedByUs === true)) return [3 /*break*/, 8];
-                        return [4 /*yield*/, queryRunner.commitTransaction()];
+                        _b.trys.push([6, 11, 12, 13]);
+                        executorsWithExecutableOperations_1 = __values(executorsWithExecutableOperations), executorsWithExecutableOperations_1_1 = executorsWithExecutableOperations_1.next();
+                        _b.label = 7;
                     case 7:
-                        _a.sent();
-                        _a.label = 8;
-                    case 8: return [3 /*break*/, 14];
+                        if (!!executorsWithExecutableOperations_1_1.done) return [3 /*break*/, 10];
+                        executor = executorsWithExecutableOperations_1_1.value;
+                        return [4 /*yield*/, executor.execute()];
+                    case 8:
+                        _b.sent();
+                        _b.label = 9;
                     case 9:
-                        error_1 = _a.sent();
-                        if (!isTransactionStartedByUs) return [3 /*break*/, 13];
-                        _a.label = 10;
-                    case 10:
-                        _a.trys.push([10, 12, , 13]);
-                        return [4 /*yield*/, queryRunner.rollbackTransaction()];
+                        executorsWithExecutableOperations_1_1 = executorsWithExecutableOperations_1.next();
+                        return [3 /*break*/, 7];
+                    case 10: return [3 /*break*/, 13];
                     case 11:
-                        _a.sent();
+                        e_1_1 = _b.sent();
+                        e_1 = { error: e_1_1 };
                         return [3 /*break*/, 13];
                     case 12:
-                        rollbackError_1 = _a.sent();
-                        return [3 /*break*/, 13];
-                    case 13: throw error_1;
-                    case 14: return [3 /*break*/, 18];
-                    case 15:
-                        if (!!this.queryRunner) return [3 /*break*/, 17];
-                        return [4 /*yield*/, queryRunner.release()];
+                        try {
+                            if (executorsWithExecutableOperations_1_1 && !executorsWithExecutableOperations_1_1.done && (_a = executorsWithExecutableOperations_1.return)) _a.call(executorsWithExecutableOperations_1);
+                        }
+                        finally { if (e_1) throw e_1.error; }
+                        return [7 /*endfinally*/];
+                    case 13:
+                        if (!(isTransactionStartedByUs === true)) return [3 /*break*/, 15];
+                        return [4 /*yield*/, queryRunner.commitTransaction()];
+                    case 14:
+                        _b.sent();
+                        _b.label = 15;
+                    case 15: return [3 /*break*/, 21];
                     case 16:
-                        _a.sent();
-                        _a.label = 17;
-                    case 17: return [7 /*endfinally*/];
-                    case 18: return [2 /*return*/];
+                        error_1 = _b.sent();
+                        if (!isTransactionStartedByUs) return [3 /*break*/, 20];
+                        _b.label = 17;
+                    case 17:
+                        _b.trys.push([17, 19, , 20]);
+                        return [4 /*yield*/, queryRunner.rollbackTransaction()];
+                    case 18:
+                        _b.sent();
+                        return [3 /*break*/, 20];
+                    case 19:
+                        rollbackError_1 = _b.sent();
+                        return [3 /*break*/, 20];
+                    case 20: throw error_1;
+                    case 21: return [3 /*break*/, 25];
+                    case 22:
+                        queryRunner.data = oldQueryRunnerData;
+                        if (!!this.queryRunner) return [3 /*break*/, 24];
+                        return [4 /*yield*/, queryRunner.release()];
+                    case 23:
+                        _b.sent();
+                        _b.label = 24;
+                    case 24: return [7 /*endfinally*/];
+                    case 25: return [2 /*return*/];
                 }
             });
-        }); });
+        });
     };
     return EntityPersistExecutor;
 }());

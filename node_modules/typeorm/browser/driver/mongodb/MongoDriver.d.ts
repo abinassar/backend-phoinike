@@ -11,6 +11,10 @@ import { DataTypeDefaults } from "../types/DataTypeDefaults";
 import { TableColumn } from "../../schema-builder/table/TableColumn";
 import { ConnectionOptions } from "../../connection/ConnectionOptions";
 import { EntityMetadata } from "../../metadata/EntityMetadata";
+import { ReplicationMode } from "../types/ReplicationMode";
+import { Table } from "../../schema-builder/table/Table";
+import { View } from "../../schema-builder/view/View";
+import { TableForeignKey } from "../../schema-builder/table/TableForeignKey";
 /**
  * Organizes communication with MongoDB.
  */
@@ -78,7 +82,7 @@ export declare class MongoDriver implements Driver {
     /**
      * Valid mongo connection options
      * NOTE: Keep sync with MongoConnectionOptions
-     * Sync with http://mongodb.github.io/node-mongodb-native/3.1/api/MongoClient.html
+     * Sync with http://mongodb.github.io/node-mongodb-native/3.5/api/MongoClient.html
      */
     protected validOptionNames: string[];
     constructor(connection: Connection);
@@ -98,7 +102,7 @@ export declare class MongoDriver implements Driver {
     /**
      * Creates a query runner used to execute database queries.
      */
-    createQueryRunner(mode?: "master" | "slave"): MongoQueryRunner;
+    createQueryRunner(mode: ReplicationMode): MongoQueryRunner;
     /**
      * Replaces parameters in the given sql with special escaping character
      * and an array of parameter names to be passed to a query.
@@ -110,9 +114,17 @@ export declare class MongoDriver implements Driver {
     escape(columnName: string): string;
     /**
      * Build full table name with database name, schema name and table name.
-     * E.g. "myDB"."mySchema"."myTable"
+     * E.g. myDB.mySchema.myTable
      */
     buildTableName(tableName: string, schema?: string, database?: string): string;
+    /**
+     * Parse a target table name or other types and return a normalized table definition.
+     */
+    parseTableName(target: EntityMetadata | Table | View | TableForeignKey | string): {
+        tableName: string;
+        schema?: string;
+        database?: string;
+    };
     /**
      * Prepares given value to a value to be persisted, based on its column type and metadata.
      */
@@ -133,7 +145,7 @@ export declare class MongoDriver implements Driver {
     /**
      * Normalizes "default" value of the column.
      */
-    normalizeDefault(columnMetadata: ColumnMetadata): string;
+    normalizeDefault(columnMetadata: ColumnMetadata): string | undefined;
     /**
      * Normalizes "isUnique" value of the column.
      */
@@ -176,6 +188,10 @@ export declare class MongoDriver implements Driver {
      */
     isUUIDGenerationSupported(): boolean;
     /**
+     * Returns true if driver supports fulltext indices.
+     */
+    isFullTextColumnTypeSupported(): boolean;
+    /**
      * Creates an escaped parameter.
      */
     createParameter(parameterName: string, index: number): string;
@@ -190,9 +206,13 @@ export declare class MongoDriver implements Driver {
     /**
      * Builds connection url that is passed to underlying driver to perform connection to the mongodb database.
      */
-    protected buildConnectionUrl(): string;
+    protected buildConnectionUrl(options: {
+        [key: string]: any;
+    }): string;
     /**
      * Build connection options from MongoConnectionOptions
      */
-    protected buildConnectionOptions(): any;
+    protected buildConnectionOptions(options: {
+        [key: string]: any;
+    }): any;
 }

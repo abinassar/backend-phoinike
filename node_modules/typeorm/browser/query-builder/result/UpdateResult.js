@@ -14,6 +14,12 @@ var UpdateResult = /** @class */ (function () {
          */
         this.generatedMaps = [];
     }
+    UpdateResult.from = function (queryResult) {
+        var result = new this();
+        result.raw = queryResult.records;
+        result.affected = queryResult.affected;
+        return result;
+    };
     return UpdateResult;
 }());
 export { UpdateResult };

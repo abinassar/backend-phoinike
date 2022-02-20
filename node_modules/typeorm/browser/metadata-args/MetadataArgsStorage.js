@@ -49,7 +49,7 @@ var MetadataArgsStorage = /** @class */ (function () {
         });
     };
     MetadataArgsStorage.prototype.filterRelations = function (target) {
-        return this.filterByTargetAndWithoutDuplicateProperties(this.relations, target);
+        return this.filterByTargetAndWithoutDuplicateRelationProperties(this.relations, target);
     };
     MetadataArgsStorage.prototype.filterRelationIds = function (target) {
         return this.filterByTargetAndWithoutDuplicateProperties(this.relationIds, target);
@@ -146,6 +146,27 @@ var MetadataArgsStorage = /** @class */ (function () {
             if (sameTarget) {
                 if (!newArray.find(function (newItem) { return newItem.propertyName === item.propertyName; }))
                     newArray.push(item);
+            }
+        });
+        return newArray;
+    };
+    /**
+     * Filters given array by a given target or targets and prevents duplicate relation property names.
+     */
+    MetadataArgsStorage.prototype.filterByTargetAndWithoutDuplicateRelationProperties = function (array, target) {
+        var newArray = [];
+        array.forEach(function (item) {
+            var sameTarget = target instanceof Array ? target.indexOf(item.target) !== -1 : item.target === target;
+            if (sameTarget) {
+                var existingIndex = newArray.findIndex(function (newItem) { return newItem.propertyName === item.propertyName; });
+                if (target instanceof Array && existingIndex !== -1 && target.indexOf(item.target) < target.indexOf(newArray[existingIndex].target)) {
+                    var clone = Object.create(newArray[existingIndex]);
+                    clone.type = item.type;
+                    newArray[existingIndex] = clone;
+                }
+                else if (existingIndex === -1) {
+                    newArray.push(item);
+                }
             }
         });
         return newArray;

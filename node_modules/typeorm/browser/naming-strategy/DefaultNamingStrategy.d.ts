@@ -4,6 +4,7 @@ import { Table } from "../schema-builder/table/Table";
  * Naming strategy that is used by default.
  */
 export declare class DefaultNamingStrategy implements NamingStrategyInterface {
+    private getTableName;
     /**
      * Normalizes table name.
      *
@@ -25,7 +26,7 @@ export declare class DefaultNamingStrategy implements NamingStrategyInterface {
     defaultConstraintName(tableOrName: Table | string, columnName: string): string;
     foreignKeyName(tableOrName: Table | string, columnNames: string[], _referencedTablePath?: string, _referencedColumnNames?: string[]): string;
     indexName(tableOrName: Table | string, columnNames: string[], where?: string): string;
-    checkConstraintName(tableOrName: Table | string, expression: string): string;
+    checkConstraintName(tableOrName: Table | string, expression: string, isEnum?: boolean): string;
     exclusionConstraintName(tableOrName: Table | string, expression: string): string;
     joinColumnName(relationName: string, referencedColumnName: string): string;
     joinTableName(firstTableName: string, secondTableName: string, firstPropertyName: string, secondPropertyName: string): string;

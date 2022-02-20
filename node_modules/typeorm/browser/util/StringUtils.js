@@ -17,10 +17,14 @@ export function camelCase(str, firstCapital) {
 /**
  * Converts string into snake_case.
  *
- * @see https://regex101.com/r/QeSm2I/1
  */
 export function snakeCase(str) {
-    return str.replace(/(?:([a-z])([A-Z]))|(?:((?!^)[A-Z])([a-z]))/g, "$1_$3$2$4").toLowerCase();
+    return str
+        // ABc -> a_bc
+        .replace(/([A-Z])([A-Z])([a-z])/g, "$1_$2$3")
+        // aC -> a_c
+        .replace(/([a-z0-9])([A-Z])/g, "$1_$2")
+        .toLowerCase();
 }
 /**
  * Converts string into Title Case.

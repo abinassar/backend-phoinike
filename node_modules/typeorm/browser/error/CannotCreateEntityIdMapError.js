@@ -1,14 +1,13 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when user tries to create entity id map from the mixed id value,
  * but id value is a single value when entity requires multiple values.
  */
 var CannotCreateEntityIdMapError = /** @class */ (function (_super) {
-    tslib_1.__extends(CannotCreateEntityIdMapError, _super);
+    __extends(CannotCreateEntityIdMapError, _super);
     function CannotCreateEntityIdMapError(metadata, id) {
         var _this = _super.call(this) || this;
-        _this.name = "CannotCreateEntityIdMapError";
-        Object.setPrototypeOf(_this, CannotCreateEntityIdMapError.prototype);
         var objectExample = metadata.primaryColumns.reduce(function (object, column, index) {
             column.setEntityValue(object, index + 1);
             return object;
@@ -17,7 +16,7 @@ var CannotCreateEntityIdMapError = /** @class */ (function (_super) {
         return _this;
     }
     return CannotCreateEntityIdMapError;
-}(Error));
+}(TypeORMError));
 export { CannotCreateEntityIdMapError };
 
 //# sourceMappingURL=CannotCreateEntityIdMapError.js.map

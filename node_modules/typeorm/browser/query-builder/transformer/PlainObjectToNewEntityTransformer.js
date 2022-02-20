@@ -55,7 +55,7 @@ var PlainObjectToNewEntityTransformer = /** @class */ (function () {
                         });
                         // if such item already exist then merge new data into it, if its not we create a new entity and merge it into the array
                         if (!objectRelatedValueEntity) {
-                            objectRelatedValueEntity = relation.inverseEntityMetadata.create();
+                            objectRelatedValueEntity = relation.inverseEntityMetadata.create(undefined, { fromDeserializer: true });
                             entityRelatedValue.push(objectRelatedValueEntity);
                         }
                         _this.groupAndTransform(objectRelatedValueEntity, objectRelatedValueItem, relation.inverseEntityMetadata, getLazyRelationsPromiseValue);
@@ -72,7 +72,7 @@ var PlainObjectToNewEntityTransformer = /** @class */ (function () {
                         return;
                     }
                     if (!entityRelatedValue) {
-                        entityRelatedValue = relation.inverseEntityMetadata.create();
+                        entityRelatedValue = relation.inverseEntityMetadata.create(undefined, { fromDeserializer: true });
                         relation.setEntityValue(entity, entityRelatedValue);
                     }
                     _this.groupAndTransform(entityRelatedValue, objectRelatedValue, relation.inverseEntityMetadata, getLazyRelationsPromiseValue);

@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../";
+import { getMetadataArgsStorage } from "../globals";
 /**
  * Creates a database index.
  * Can be used on entity property or on entity.

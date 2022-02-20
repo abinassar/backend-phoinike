@@ -1,7 +1,5 @@
 import { EntityMetadata } from "../metadata/EntityMetadata";
-/**
- */
-export declare class MissingPrimaryColumnError extends Error {
-    name: string;
+import { TypeORMError } from "./TypeORMError";
+export declare class MissingPrimaryColumnError extends TypeORMError {
     constructor(entityMetadata: EntityMetadata);
 }

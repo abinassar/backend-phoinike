@@ -1,5 +1,6 @@
+import { ObjectLiteral } from "../common/ObjectLiteral";
 import { FindOperatorType } from "./FindOperatorType";
-import { Connection } from "../";
+declare type SqlGeneratorType = (aliasPath: string) => string;
 /**
  * Find Operator used in Find Conditions.
  */
@@ -13,6 +14,10 @@ export declare class FindOperator<T> {
      */
     private _value;
     /**
+     * ObjectLiteral parameters.
+     */
+    private _objectLiteralParameters;
+    /**
      * Indicates if parameter is used or not for this operator.
      */
     private _useParameter;
@@ -20,23 +25,40 @@ export declare class FindOperator<T> {
      * Indicates if multiple parameters must be used for this operator.
      */
     private _multipleParameters;
-    constructor(type: FindOperatorType, value: T | FindOperator<T>, useParameter?: boolean, multipleParameters?: boolean);
+    /**
+     * SQL generator
+     */
+    private _getSql;
+    constructor(type: FindOperatorType, value: T | FindOperator<T>, useParameter?: boolean, multipleParameters?: boolean, getSql?: SqlGeneratorType, objectLiteralParameters?: ObjectLiteral);
     /**
      * Indicates if parameter is used or not for this operator.
      * Extracts final value if value is another find operator.
      */
-    readonly useParameter: boolean;
+    get useParameter(): boolean;
     /**
      * Indicates if multiple parameters must be used for this operator.
      * Extracts final value if value is another find operator.
      */
-    readonly multipleParameters: boolean;
+    get multipleParameters(): boolean;
+    /**
+     * Gets the Type of this FindOperator
+     */
+    get type(): FindOperatorType;
     /**
      * Gets the final value needs to be used as parameter value.
      */
-    readonly value: T;
+    get value(): T;
     /**
-     * Gets SQL needs to be inserted into final query.
+     * Gets ObjectLiteral parameters.
      */
-    toSql(connection: Connection, aliasPath: string, parameters: string[]): string;
+    get objectLiteralParameters(): ObjectLiteral | undefined;
+    /**
+     * Gets the child FindOperator if it exists
+     */
+    get child(): FindOperator<T> | undefined;
+    /**
+     * Gets the SQL generator
+     */
+    get getSql(): SqlGeneratorType | undefined;
 }
+export {};

@@ -1,13 +1,19 @@
-import { Connection, Driver, SelectQueryBuilder } from "../..";
-import { EntityMetadata } from "../..";
+import { Connection, Driver, EntityMetadata, SelectQueryBuilder } from "../..";
 import { ViewOptions } from "../options/ViewOptions";
 /**
  * View in the database represented in this class.
  */
 export declare class View {
     /**
-     * Contains database name, schema name and table name.
-     * E.g. "myDB"."mySchema"."myTable"
+     * Database name that this view resides in if it applies.
+     */
+    database?: string;
+    /**
+     * Schema name that this view resides in if it applies.
+     */
+    schema?: string;
+    /**
+     * View name
      */
     name: string;
     /**

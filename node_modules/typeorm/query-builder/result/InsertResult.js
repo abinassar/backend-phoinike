@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.InsertResult = void 0;
 /**
  * Result object returned by InsertQueryBuilder execution.
  */
@@ -16,6 +17,11 @@ var InsertResult = /** @class */ (function () {
          */
         this.generatedMaps = [];
     }
+    InsertResult.from = function (queryResult) {
+        var result = new this();
+        result.raw = queryResult.raw;
+        return result;
+    };
     return InsertResult;
 }());
 exports.InsertResult = InsertResult;

@@ -8,7 +8,11 @@ export declare class ConnectionManager {
     /**
      * List of connections registered in this connection manager.
      */
-    readonly connections: Connection[];
+    get connections(): Connection[];
+    /**
+     * Internal lookup to quickly get from a connection name to the Connection object.
+     */
+    private readonly connectionMap;
     /**
      * Checks if connection with the given name exist in the manager.
      */

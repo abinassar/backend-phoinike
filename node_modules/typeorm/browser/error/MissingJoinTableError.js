@@ -1,12 +1,9 @@
-import * as tslib_1 from "tslib";
-/**
- */
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 var MissingJoinTableError = /** @class */ (function (_super) {
-    tslib_1.__extends(MissingJoinTableError, _super);
+    __extends(MissingJoinTableError, _super);
     function MissingJoinTableError(entityMetadata, relation) {
         var _this = _super.call(this) || this;
-        _this.name = "MissingJoinTableError";
-        Object.setPrototypeOf(_this, MissingJoinTableError.prototype);
         if (relation.inverseRelation) {
             _this.message = "JoinTable is missing on both sides of " + entityMetadata.name + "#" + relation.propertyName + " and " +
                 (relation.inverseEntityMetadata.name + "#" + relation.inverseRelation.propertyName + " many-to-many relationship. ") +
@@ -19,7 +16,7 @@ var MissingJoinTableError = /** @class */ (function (_super) {
         return _this;
     }
     return MissingJoinTableError;
-}(Error));
+}(TypeORMError));
 export { MissingJoinTableError };
 
 //# sourceMappingURL=MissingJoinTableError.js.map

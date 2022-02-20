@@ -1,18 +1,16 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown if some required driver's option is not set.
  */
 var DriverOptionNotSetError = /** @class */ (function (_super) {
-    tslib_1.__extends(DriverOptionNotSetError, _super);
+    __extends(DriverOptionNotSetError, _super);
     function DriverOptionNotSetError(optionName) {
-        var _this = _super.call(this) || this;
-        _this.name = "DriverOptionNotSetError";
-        Object.setPrototypeOf(_this, DriverOptionNotSetError.prototype);
-        _this.message = "Driver option (" + optionName + ") is not set. Please set it to perform connection to the database.";
-        return _this;
+        return _super.call(this, "Driver option (" + optionName + ") is not set. " +
+            "Please set it to perform connection to the database.") || this;
     }
     return DriverOptionNotSetError;
-}(Error));
+}(TypeORMError));
 export { DriverOptionNotSetError };
 
 //# sourceMappingURL=DriverOptionNotSetError.js.map

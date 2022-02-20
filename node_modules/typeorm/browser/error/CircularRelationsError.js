@@ -1,18 +1,16 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when circular relations detected with nullable set to false.
  */
 var CircularRelationsError = /** @class */ (function (_super) {
-    tslib_1.__extends(CircularRelationsError, _super);
+    __extends(CircularRelationsError, _super);
     function CircularRelationsError(path) {
-        var _this = _super.call(this) || this;
-        _this.name = "CircularRelationsError";
-        Object.setPrototypeOf(_this, CircularRelationsError.prototype);
-        _this.message = "Circular relations detected: " + path + ". To resolve this issue you need to set nullable: true somewhere in this dependency structure.";
-        return _this;
+        return _super.call(this, "Circular relations detected: " + path + ". To resolve this issue you need to " +
+            "set nullable: true somewhere in this dependency structure.") || this;
     }
     return CircularRelationsError;
-}(Error));
+}(TypeORMError));
 export { CircularRelationsError };
 
 //# sourceMappingURL=CircularRelationsError.js.map

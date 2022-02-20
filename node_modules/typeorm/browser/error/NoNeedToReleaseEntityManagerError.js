@@ -1,20 +1,17 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when consumer tries to release entity manager that does not use single database connection.
  */
 var NoNeedToReleaseEntityManagerError = /** @class */ (function (_super) {
-    tslib_1.__extends(NoNeedToReleaseEntityManagerError, _super);
+    __extends(NoNeedToReleaseEntityManagerError, _super);
     function NoNeedToReleaseEntityManagerError() {
-        var _this = _super.call(this) || this;
-        _this.name = "NoNeedToReleaseEntityManagerError";
-        Object.setPrototypeOf(_this, NoNeedToReleaseEntityManagerError.prototype);
-        _this.message = "Entity manager is not using single database connection and cannot be released. " +
+        return _super.call(this, "Entity manager is not using single database connection and cannot be released. " +
             "Only entity managers created by connection#createEntityManagerWithSingleDatabaseConnection " +
-            "methods have a single database connection and they should be released.";
-        return _this;
+            "methods have a single database connection and they should be released.") || this;
     }
     return NoNeedToReleaseEntityManagerError;
-}(Error));
+}(TypeORMError));
 export { NoNeedToReleaseEntityManagerError };
 
 //# sourceMappingURL=NoNeedToReleaseEntityManagerError.js.map

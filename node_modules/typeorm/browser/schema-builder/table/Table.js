@@ -1,3 +1,4 @@
+import { __assign } from "tslib";
 import { TableColumn } from "./TableColumn";
 import { TableIndex } from "./TableIndex";
 import { TableForeignKey } from "./TableForeignKey";
@@ -44,13 +45,15 @@ var Table = /** @class */ (function () {
          */
         this.justCreated = false;
         if (options) {
+            this.database = options.database;
+            this.schema = options.schema;
             this.name = options.name;
             if (options.columns)
                 this.columns = options.columns.map(function (column) { return new TableColumn(column); });
             if (options.indices)
                 this.indices = options.indices.map(function (index) { return new TableIndex(index); });
             if (options.foreignKeys)
-                this.foreignKeys = options.foreignKeys.map(function (foreignKey) { return new TableForeignKey(foreignKey); });
+                this.foreignKeys = options.foreignKeys.map(function (foreignKey) { return new TableForeignKey(__assign(__assign({}, foreignKey), { referencedDatabase: (foreignKey === null || foreignKey === void 0 ? void 0 : foreignKey.referencedDatabase) || options.database, referencedSchema: (foreignKey === null || foreignKey === void 0 ? void 0 : foreignKey.referencedSchema) || options.schema })); });
             if (options.uniques)
                 this.uniques = options.uniques.map(function (unique) { return new TableUnique(unique); });
             if (options.checks)
@@ -69,7 +72,7 @@ var Table = /** @class */ (function () {
         get: function () {
             return this.columns.filter(function (column) { return column.isPrimary; });
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     // -------------------------------------------------------------------------
@@ -80,6 +83,8 @@ var Table = /** @class */ (function () {
      */
     Table.prototype.clone = function () {
         return new Table({
+            schema: this.schema,
+            database: this.database,
             name: this.name,
             columns: this.columns.map(function (column) { return column.clone(); }),
             indices: this.indices.map(function (constraint) { return constraint.clone(); }),
@@ -247,8 +252,12 @@ var Table = /** @class */ (function () {
      * Creates table from a given entity metadata.
      */
     Table.create = function (entityMetadata, driver) {
+        var database = entityMetadata.database === driver.database ? undefined : entityMetadata.database;
+        var schema = entityMetadata.schema === driver.options.schema ? undefined : entityMetadata.schema;
         var options = {
-            name: driver.buildTableName(entityMetadata.tableName, entityMetadata.schema, entityMetadata.database),
+            database: entityMetadata.database,
+            schema: entityMetadata.schema,
+            name: driver.buildTableName(entityMetadata.tableName, schema, database),
             engine: entityMetadata.engine,
             columns: entityMetadata.columns
                 .filter(function (column) { return column; })

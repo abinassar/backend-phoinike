@@ -13,6 +13,7 @@ import { BaseQueryRunner } from "../../query-runner/BaseQueryRunner";
 import { TableCheck } from "../../schema-builder/table/TableCheck";
 import { IsolationLevel } from "../types/IsolationLevel";
 import { TableExclusion } from "../../schema-builder/table/TableExclusion";
+import { ReplicationMode } from "../types/ReplicationMode";
 /**
  * Runs queries on a single postgres database connection.
  */
@@ -40,7 +41,7 @@ export declare class CockroachQueryRunner extends BaseQueryRunner implements Que
      * Indicates if running queries must be stored
      */
     protected storeQueries: boolean;
-    constructor(driver: CockroachDriver, mode?: "master" | "slave");
+    constructor(driver: CockroachDriver, mode: ReplicationMode);
     /**
      * Creates/uses database connection from the connection pool to perform further operations.
      * Returns obtained database connection.
@@ -68,7 +69,7 @@ export declare class CockroachQueryRunner extends BaseQueryRunner implements Que
     /**
      * Executes a given SQL query.
      */
-    query(query: string, parameters?: any[], options?: {}): Promise<any>;
+    query(query: string, parameters?: any[], useStructuredResult?: boolean): Promise<any>;
     /**
      * Returns raw data stream.
      */
@@ -87,9 +88,17 @@ export declare class CockroachQueryRunner extends BaseQueryRunner implements Que
      */
     hasDatabase(database: string): Promise<boolean>;
     /**
+     * Loads currently using database
+     */
+    getCurrentDatabase(): Promise<string>;
+    /**
      * Checks if schema with the given name exist.
      */
     hasSchema(schema: string): Promise<boolean>;
+    /**
+     * Loads currently using database schema
+     */
+    getCurrentSchema(): Promise<string>;
     /**
      * Checks if table with the given name exist in the database.
      */
@@ -109,7 +118,7 @@ export declare class CockroachQueryRunner extends BaseQueryRunner implements Que
     /**
      * Creates a new table schema.
      */
-    createSchema(schema: string, ifNotExist?: boolean): Promise<void>;
+    createSchema(schemaPath: string, ifNotExist?: boolean): Promise<void>;
     /**
      * Drops table schema.
      */
@@ -164,7 +173,7 @@ export declare class CockroachQueryRunner extends BaseQueryRunner implements Que
     /**
      * Drops the columns in the table.
      */
-    dropColumns(tableOrName: Table | string, columns: TableColumn[]): Promise<void>;
+    dropColumns(tableOrName: Table | string, columns: TableColumn[] | string[]): Promise<void>;
     /**
      * Creates a new primary key.
      */
@@ -266,19 +275,15 @@ export declare class CockroachQueryRunner extends BaseQueryRunner implements Que
      * Removes all tables from the currently connected database.
      */
     clearDatabase(): Promise<void>;
-    protected loadViews(viewNames: string[]): Promise<View[]>;
+    protected loadViews(viewNames?: string[]): Promise<View[]>;
     /**
      * Loads all tables (with given names) from the database and creates a Table from them.
      */
-    protected loadTables(tableNames: string[]): Promise<Table[]>;
+    protected loadTables(tableNames?: string[]): Promise<Table[]>;
     /**
      * Builds create table sql.
      */
     protected createTableSql(table: Table, createForeignKeys?: boolean): Query;
-    /**
-     * Extracts schema name from given Table object or table name string.
-     */
-    protected extractSchema(target: Table | string): string | undefined;
     /**
      * Builds drop table sql.
      */
@@ -337,18 +342,16 @@ export declare class CockroachQueryRunner extends BaseQueryRunner implements Que
     /**
      * Builds sequence name from given table and column.
      */
-    protected buildSequenceName(table: Table, columnOrName: TableColumn | string, disableEscape?: true): string;
+    protected buildSequenceName(table: Table, columnOrName: TableColumn | string): string;
+    protected buildSequencePath(table: Table, columnOrName: TableColumn | string): string;
+    /**
+     * Escapes a given comment so it's safe to include in a query.
+     */
+    protected escapeComment(comment?: string): string;
     /**
      * Escapes given table or view path.
      */
-    protected escapePath(target: Table | View | string, disableEscape?: boolean): string;
-    /**
-     * Returns object with table schema and table name.
-     */
-    protected parseTableName(target: Table | string): {
-        schema: string;
-        tableName: string;
-    };
+    protected escapePath(target: Table | View | string): string;
     /**
      * Builds a query for create column.
      */

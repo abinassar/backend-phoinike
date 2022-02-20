@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.OneToOneInverseSideSubjectBuilder = void 0;
 var Subject_1 = require("../Subject");
 var OrmUtils_1 = require("../../util/OrmUtils");
 /**
@@ -102,7 +103,7 @@ var OneToOneInverseSideSubjectBuilder = /** @class */ (function () {
             // in this persistence because he didn't pass this entity for save or he did not set cascades
             // but without entity being inserted we cannot bind it in the relation operation, so we throw an exception here
             // if (!relatedEntitySubject)
-            //     throw new Error(`One-to-one inverse relation "${relation.entityMetadata.name}.${relation.propertyPath}" contains ` +
+            //     throw new TypeORMError(`One-to-one inverse relation "${relation.entityMetadata.name}.${relation.propertyPath}" contains ` +
             //         `entity which does not exist in the database yet, thus cannot be bind in the database. ` +
             //         `Please setup cascade insertion or save entity before binding it.`);
             if (!relatedEntitySubject)

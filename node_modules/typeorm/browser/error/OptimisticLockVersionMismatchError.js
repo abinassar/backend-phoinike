@@ -1,18 +1,15 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when a version check on an object that uses optimistic locking through a version field fails.
  */
 var OptimisticLockVersionMismatchError = /** @class */ (function (_super) {
-    tslib_1.__extends(OptimisticLockVersionMismatchError, _super);
+    __extends(OptimisticLockVersionMismatchError, _super);
     function OptimisticLockVersionMismatchError(entity, expectedVersion, actualVersion) {
-        var _this = _super.call(this) || this;
-        _this.name = "OptimisticLockVersionMismatchError";
-        Object.setPrototypeOf(_this, OptimisticLockVersionMismatchError.prototype);
-        _this.message = "The optimistic lock on entity " + entity + " failed, version " + expectedVersion + " was expected, but is actually " + actualVersion + ".";
-        return _this;
+        return _super.call(this, "The optimistic lock on entity " + entity + " failed, version " + expectedVersion + " was expected, but is actually " + actualVersion + ".") || this;
     }
     return OptimisticLockVersionMismatchError;
-}(Error));
+}(TypeORMError));
 export { OptimisticLockVersionMismatchError };
 
 //# sourceMappingURL=OptimisticLockVersionMismatchError.js.map

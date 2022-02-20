@@ -1,8 +1,9 @@
-import * as tslib_1 from "tslib";
+import { __assign, __read } from "tslib";
 import { Alias } from "./Alias";
 import { JoinAttribute } from "./JoinAttribute";
 import { RelationIdAttribute } from "./relation-id/RelationIdAttribute";
 import { RelationCountAttribute } from "./relation-count/RelationCountAttribute";
+import { TypeORMError } from "../error";
 /**
  * Contains all properties of the QueryBuilder that needs to be build a final query.
  */
@@ -31,6 +32,10 @@ var QueryExpressionMap = /** @class */ (function () {
          * Data needs to be SELECT-ed.
          */
         this.selects = [];
+        /**
+         * Max execution time in millisecond.
+         */
+        this.maxExecutionTime = 0;
         /**
          * Whether SELECT is DISTINCT.
          */
@@ -147,9 +152,16 @@ var QueryExpressionMap = /** @class */ (function () {
         this.useTransaction = false;
         /**
          * Extra parameters.
-         * Used in InsertQueryBuilder to avoid default parameters mechanizm and execute high performance insertions.
+         *
+         * @deprecated Use standard parameters instead
          */
         this.nativeParameters = {};
+        /**
+         * Items from an entity that have been locally generated & are recorded here for later use.
+         * Examples include the UUID generation when the database does not natively support it.
+         * These are included in the entity index order.
+         */
+        this.locallyGenerated = {};
     }
     Object.defineProperty(QueryExpressionMap.prototype, "allOrderBys", {
         // -------------------------------------------------------------------------
@@ -170,7 +182,7 @@ var QueryExpressionMap = /** @class */ (function () {
             }
             return this.orderBys;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     // -------------------------------------------------------------------------
@@ -220,11 +232,11 @@ var QueryExpressionMap = /** @class */ (function () {
     QueryExpressionMap.prototype.findAliasByName = function (aliasName) {
         var alias = this.aliases.find(function (alias) { return alias.name === aliasName; });
         if (!alias)
-            throw new Error("\"" + aliasName + "\" alias was not found. Maybe you forgot to join it?");
+            throw new TypeORMError("\"" + aliasName + "\" alias was not found. Maybe you forgot to join it?");
         return alias;
     };
     QueryExpressionMap.prototype.findColumnByAliasExpression = function (aliasExpression) {
-        var _a = tslib_1.__read(aliasExpression.split("."), 2), aliasName = _a[0], propertyPath = _a[1];
+        var _a = __read(aliasExpression.split("."), 2), aliasName = _a[0], propertyPath = _a[1];
         var alias = this.findAliasByName(aliasName);
         return alias.metadata.findColumnWithPropertyName(propertyPath);
     };
@@ -236,13 +248,13 @@ var QueryExpressionMap = /** @class */ (function () {
          */
         get: function () {
             if (!this.mainAlias)
-                throw new Error("Entity to work with is not specified!"); // todo: better message
+                throw new TypeORMError("Entity to work with is not specified!"); // todo: better message
             var relationMetadata = this.mainAlias.metadata.findRelationWithPropertyPath(this.relationPropertyPath);
             if (!relationMetadata)
-                throw new Error("Relation " + this.relationPropertyPath + " was not found in entity " + this.mainAlias.name); // todo: better message
+                throw new TypeORMError("Relation " + this.relationPropertyPath + " was not found in entity " + this.mainAlias.name); // todo: better message
             return relationMetadata;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     /**
@@ -254,6 +266,7 @@ var QueryExpressionMap = /** @class */ (function () {
         var map = new QueryExpressionMap(this.connection);
         map.queryType = this.queryType;
         map.selects = this.selects.map(function (select) { return select; });
+        map.maxExecutionTime = this.maxExecutionTime;
         map.selectDistinct = this.selectDistinct;
         map.selectDistinctOn = this.selectDistinctOn;
         this.aliases.forEach(function (alias) { return map.aliases.push(new Alias(alias)); });
@@ -266,8 +279,8 @@ var QueryExpressionMap = /** @class */ (function () {
         map.joinAttributes = this.joinAttributes.map(function (join) { return new JoinAttribute(_this.connection, _this, join); });
         map.relationIdAttributes = this.relationIdAttributes.map(function (relationId) { return new RelationIdAttribute(_this, relationId); });
         map.relationCountAttributes = this.relationCountAttributes.map(function (relationCount) { return new RelationCountAttribute(_this, relationCount); });
-        map.wheres = this.wheres.map(function (where) { return (tslib_1.__assign({}, where)); });
-        map.havings = this.havings.map(function (having) { return (tslib_1.__assign({}, having)); });
+        map.wheres = this.wheres.map(function (where) { return (__assign({}, where)); });
+        map.havings = this.havings.map(function (having) { return (__assign({}, having)); });
         map.orderBys = Object.assign({}, this.orderBys);
         map.groupBys = this.groupBys.map(function (groupBy) { return groupBy; });
         map.limit = this.limit;
@@ -276,6 +289,7 @@ var QueryExpressionMap = /** @class */ (function () {
         map.take = this.take;
         map.lockMode = this.lockMode;
         map.lockVersion = this.lockVersion;
+        map.lockTables = this.lockTables;
         map.withDeleted = this.withDeleted;
         map.parameters = Object.assign({}, this.parameters);
         map.disableEscaping = this.disableEscaping;
@@ -294,6 +308,7 @@ var QueryExpressionMap = /** @class */ (function () {
         map.callListeners = this.callListeners;
         map.useTransaction = this.useTransaction;
         map.nativeParameters = Object.assign({}, this.nativeParameters);
+        map.comment = this.comment;
         return map;
     };
     return QueryExpressionMap;

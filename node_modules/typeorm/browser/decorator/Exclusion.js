@@ -1,4 +1,5 @@
-import { getMetadataArgsStorage } from "../";
+import { getMetadataArgsStorage } from "../globals";
+import { TypeORMError } from "../error";
 /**
  * Creates a database exclusion.
  * Can be used on entity.
@@ -8,7 +9,7 @@ export function Exclusion(nameOrExpression, maybeExpression) {
     var name = maybeExpression ? nameOrExpression : undefined;
     var expression = maybeExpression ? maybeExpression : nameOrExpression;
     if (!expression)
-        throw new Error("Exclusion expression is required");
+        throw new TypeORMError("Exclusion expression is required");
     return function (clsOrObject, propertyName) {
         getMetadataArgsStorage().exclusions.push({
             target: propertyName ? clsOrObject.constructor : clsOrObject,

@@ -1,19 +1,14 @@
-import * as tslib_1 from "tslib";
-/**
- */
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 var UsingJoinTableIsNotAllowedError = /** @class */ (function (_super) {
-    tslib_1.__extends(UsingJoinTableIsNotAllowedError, _super);
+    __extends(UsingJoinTableIsNotAllowedError, _super);
     function UsingJoinTableIsNotAllowedError(entityMetadata, relation) {
-        var _this = _super.call(this) || this;
-        _this.name = "UsingJoinTableIsNotAllowedError";
-        Object.setPrototypeOf(_this, UsingJoinTableIsNotAllowedError.prototype);
-        _this.message = "Using JoinTable on " + entityMetadata.name + "#" + relation.propertyName + " is wrong. " +
+        return _super.call(this, "Using JoinTable on " + entityMetadata.name + "#" + relation.propertyName + " is wrong. " +
             (entityMetadata.name + "#" + relation.propertyName + " has " + relation.relationType + " relation, ") +
-            "however you can use JoinTable only on many-to-many relations.";
-        return _this;
+            "however you can use JoinTable only on many-to-many relations.") || this;
     }
     return UsingJoinTableIsNotAllowedError;
-}(Error));
+}(TypeORMError));
 export { UsingJoinTableIsNotAllowedError };
 
 //# sourceMappingURL=UsingJoinTableIsNotAllowedError.js.map

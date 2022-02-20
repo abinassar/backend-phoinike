@@ -1,17 +1,12 @@
-import * as tslib_1 from "tslib";
-/**
- */
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 var MissingDeleteDateColumnError = /** @class */ (function (_super) {
-    tslib_1.__extends(MissingDeleteDateColumnError, _super);
+    __extends(MissingDeleteDateColumnError, _super);
     function MissingDeleteDateColumnError(entityMetadata) {
-        var _this = _super.call(this) || this;
-        _this.name = "MissingDeleteDateColumnError";
-        Object.setPrototypeOf(_this, MissingDeleteDateColumnError.prototype);
-        _this.message = "Entity \"" + entityMetadata.name + "\" does not have delete date columns.";
-        return _this;
+        return _super.call(this, "Entity \"" + entityMetadata.name + "\" does not have delete date columns.") || this;
     }
     return MissingDeleteDateColumnError;
-}(Error));
+}(TypeORMError));
 export { MissingDeleteDateColumnError };
 
 //# sourceMappingURL=MissingDeleteDateColumnError.js.map

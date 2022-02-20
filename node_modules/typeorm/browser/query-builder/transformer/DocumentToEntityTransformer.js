@@ -21,7 +21,7 @@ var DocumentToEntityTransformer = /** @class */ (function () {
         return documents.map(function (document) { return _this.transform(document, metadata); });
     };
     DocumentToEntityTransformer.prototype.transform = function (document, metadata) {
-        var entity = metadata.create();
+        var entity = metadata.create(undefined, { fromDeserializer: true });
         var hasData = false;
         // handle _id property the special way
         if (metadata.objectIdColumn && document[metadata.objectIdColumn.databaseNameWithoutPrefixes]) {
@@ -59,7 +59,6 @@ var DocumentToEntityTransformer = /** @class */ (function () {
         metadata.ownColumns.forEach(function (column) {
             var valueInObject = document[column.databaseNameWithoutPrefixes];
             if (valueInObject !== undefined &&
-                valueInObject !== null &&
                 column.propertyName &&
                 !column.isVirtual) {
                 // const value = this.driver.prepareHydratedValue(valueInObject, column);
@@ -73,7 +72,7 @@ var DocumentToEntityTransformer = /** @class */ (function () {
                     return;
                 if (embedded.isArray) {
                     entity[embedded.propertyName] = document[embedded.prefix].map(function (subValue, index) {
-                        var newItem = embedded.create();
+                        var newItem = embedded.create({ fromDeserializer: true });
                         embedded.columns.forEach(function (column) {
                             newItem[column.propertyName] = subValue[column.databaseNameWithoutPrefixes];
                         });
@@ -83,13 +82,13 @@ var DocumentToEntityTransformer = /** @class */ (function () {
                 }
                 else {
                     if (embedded.embeddeds.length && !entity[embedded.propertyName])
-                        entity[embedded.propertyName] = embedded.create();
+                        entity[embedded.propertyName] = embedded.create({ fromDeserializer: true });
                     embedded.columns.forEach(function (column) {
                         var value = document[embedded.prefix][column.databaseNameWithoutPrefixes];
                         if (value === undefined)
                             return;
                         if (!entity[embedded.propertyName])
-                            entity[embedded.propertyName] = embedded.create();
+                            entity[embedded.propertyName] = embedded.create({ fromDeserializer: true });
                         entity[embedded.propertyName][column.propertyName] = value;
                     });
                 }

@@ -1,5 +1,6 @@
 import { ForeignKeyMetadata } from "../../metadata/ForeignKeyMetadata";
 import { TableForeignKeyOptions } from "../options/TableForeignKeyOptions";
+import { Driver } from "../../driver/Driver";
 /**
  * Foreign key from the database stored in this class.
  */
@@ -12,6 +13,14 @@ export declare class TableForeignKey {
      * Column names which included by this foreign key.
      */
     columnNames: string[];
+    /**
+     * Database of Table referenced in the foreign key.
+     */
+    referencedDatabase?: string;
+    /**
+     * Database of Table referenced in the foreign key.
+     */
+    referencedSchema?: string;
     /**
      * Table referenced in the foreign key.
      */
@@ -43,5 +52,5 @@ export declare class TableForeignKey {
     /**
      * Creates a new table foreign key from the given foreign key metadata.
      */
-    static create(metadata: ForeignKeyMetadata): TableForeignKey;
+    static create(metadata: ForeignKeyMetadata, driver: Driver): TableForeignKey;
 }

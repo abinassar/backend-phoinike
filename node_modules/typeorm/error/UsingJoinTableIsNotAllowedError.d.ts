@@ -1,8 +1,6 @@
 import { EntityMetadata } from "../metadata/EntityMetadata";
 import { RelationMetadata } from "../metadata/RelationMetadata";
-/**
- */
-export declare class UsingJoinTableIsNotAllowedError extends Error {
-    name: string;
+import { TypeORMError } from "./TypeORMError";
+export declare class UsingJoinTableIsNotAllowedError extends TypeORMError {
     constructor(entityMetadata: EntityMetadata, relation: RelationMetadata);
 }

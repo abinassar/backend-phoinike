@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../";
+import { getMetadataArgsStorage } from "../globals";
 /**
  * Marks a column to generate a value on entity insertion.
  * There are three types of generation strategy - increment, uuid and rowid (cockroachdb only).

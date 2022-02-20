@@ -1,6 +1,7 @@
-import * as tslib_1 from "tslib";
+import { __values } from "tslib";
 import { QueryBuilderUtils } from "./QueryBuilderUtils";
 import { ObjectUtils } from "../util/ObjectUtils";
+import { TypeORMError } from "../error";
 /**
  * Stores all join attributes which will be used to build a JOIN query.
  */
@@ -26,7 +27,7 @@ var JoinAttribute = /** @class */ (function () {
                 return this.relation.isManyToMany || this.relation.isOneToMany;
             return false;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(JoinAttribute.prototype, "isSelected", {
@@ -45,7 +46,7 @@ var JoinAttribute = /** @class */ (function () {
                             return { value: true };
                     };
                     try {
-                        for (var _b = tslib_1.__values(_this.queryExpressionMap.selects), _c = _b.next(); !_c.done; _c = _b.next()) {
+                        for (var _b = __values(_this.queryExpressionMap.selects), _c = _b.next(); !_c.done; _c = _b.next()) {
                             var select = _c.value;
                             var state_1 = _loop_1(select);
                             if (typeof state_1 === "object")
@@ -66,7 +67,7 @@ var JoinAttribute = /** @class */ (function () {
             }
             return this.isSelectedCache;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(JoinAttribute.prototype, "tablePath", {
@@ -76,7 +77,7 @@ var JoinAttribute = /** @class */ (function () {
         get: function () {
             return this.metadata ? this.metadata.tablePath : this.entityOrProperty;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(JoinAttribute.prototype, "parentAlias", {
@@ -91,7 +92,7 @@ var JoinAttribute = /** @class */ (function () {
                 return undefined;
             return this.entityOrProperty.substr(0, this.entityOrProperty.indexOf("."));
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(JoinAttribute.prototype, "relationPropertyPath", {
@@ -107,7 +108,7 @@ var JoinAttribute = /** @class */ (function () {
                 return undefined;
             return this.entityOrProperty.substr(this.entityOrProperty.indexOf(".") + 1);
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(JoinAttribute.prototype, "relation", {
@@ -134,14 +135,14 @@ var JoinAttribute = /** @class */ (function () {
                             return relation;
                         }
                     }
-                    throw new Error("Relation with property path " + _this.relationPropertyPath + " in entity was not found.");
+                    throw new TypeORMError("Relation with property path " + _this.relationPropertyPath + " in entity was not found.");
                 };
                 this.relationCache = getValue.bind(this)();
                 this.relationEvaluated = true;
             }
             return this.relationCache;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(JoinAttribute.prototype, "metadata", {
@@ -169,7 +170,7 @@ var JoinAttribute = /** @class */ (function () {
                 return this.connection.entityMetadatas.find(metadata => metadata.tableName === this.entityOrProperty);
             }*/
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(JoinAttribute.prototype, "junctionAlias", {
@@ -178,10 +179,10 @@ var JoinAttribute = /** @class */ (function () {
          */
         get: function () {
             if (!this.relation)
-                throw new Error("Cannot get junction table for join without relation.");
+                throw new TypeORMError("Cannot get junction table for join without relation.");
             return this.relation.isOwning ? this.parentAlias + "_" + this.alias.name : this.alias.name + "_" + this.parentAlias;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(JoinAttribute.prototype, "mapToPropertyParentAlias", {
@@ -190,7 +191,7 @@ var JoinAttribute = /** @class */ (function () {
                 return undefined;
             return this.mapToProperty.split(".")[0];
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(JoinAttribute.prototype, "mapToPropertyPropertyName", {
@@ -199,7 +200,7 @@ var JoinAttribute = /** @class */ (function () {
                 return undefined;
             return this.mapToProperty.split(".")[1];
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     return JoinAttribute;

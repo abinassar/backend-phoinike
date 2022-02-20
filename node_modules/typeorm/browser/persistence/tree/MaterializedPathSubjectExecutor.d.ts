@@ -10,4 +10,9 @@ export declare class MaterializedPathSubjectExecutor {
      * Executes operations when subject is being inserted.
      */
     insert(subject: Subject): Promise<void>;
+    /**
+     * Executes operations when subject is being updated.
+     */
+    update(subject: Subject): Promise<void>;
+    private getEntityPath;
 }

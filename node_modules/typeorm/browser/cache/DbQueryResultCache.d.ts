@@ -8,6 +8,8 @@ import { QueryResultCacheOptions } from "./QueryResultCacheOptions";
 export declare class DbQueryResultCache implements QueryResultCache {
     protected connection: Connection;
     private queryResultCacheTable;
+    private queryResultCacheDatabase?;
+    private queryResultCacheSchema?;
     constructor(connection: Connection);
     /**
      * Creates a connection with given cache provider.

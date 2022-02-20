@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.EntityListenerMetadata = void 0;
 /**
  * This metadata contains all information about entity's listeners.
  */
@@ -39,11 +40,17 @@ var EntityListenerMetadata = /** @class */ (function () {
      * Calls embedded entity listener method no matter how nested it is.
      */
     EntityListenerMetadata.prototype.callEntityEmbeddedMethod = function (entity, propertyPaths) {
+        var _this = this;
         var propertyPath = propertyPaths.shift();
         if (!propertyPath || !entity[propertyPath])
             return;
         if (propertyPaths.length === 0) {
-            entity[propertyPath][this.propertyName]();
+            if (entity[propertyPath] instanceof Array) {
+                entity[propertyPath].map(function (embedded) { return embedded[_this.propertyName](); });
+            }
+            else {
+                entity[propertyPath][this.propertyName]();
+            }
         }
         else {
             if (entity[propertyPath])

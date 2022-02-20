@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ConnectionManager = void 0;
 var Connection_1 = require("./Connection");
 var ConnectionNotFoundError_1 = require("../error/ConnectionNotFoundError");
 var AlreadyHasActiveConnectionError_1 = require("../error/AlreadyHasActiveConnectionError");
@@ -9,14 +10,21 @@ var AlreadyHasActiveConnectionError_1 = require("../error/AlreadyHasActiveConnec
  */
 var ConnectionManager = /** @class */ (function () {
     function ConnectionManager() {
-        // -------------------------------------------------------------------------
-        // Protected Properties
-        // -------------------------------------------------------------------------
+        /**
+         * Internal lookup to quickly get from a connection name to the Connection object.
+         */
+        this.connectionMap = new Map();
+    }
+    Object.defineProperty(ConnectionManager.prototype, "connections", {
         /**
          * List of connections registered in this connection manager.
          */
-        this.connections = [];
-    }
+        get: function () {
+            return Array.from(this.connectionMap.values());
+        },
+        enumerable: false,
+        configurable: true
+    });
     // -------------------------------------------------------------------------
     // Public Methods
     // -------------------------------------------------------------------------
@@ -24,7 +32,7 @@ var ConnectionManager = /** @class */ (function () {
      * Checks if connection with the given name exist in the manager.
      */
     ConnectionManager.prototype.has = function (name) {
-        return !!this.connections.find(function (connection) { return connection.name === name; });
+        return this.connectionMap.has(name);
     };
     /**
      * Gets registered connection with the given name.
@@ -33,7 +41,7 @@ var ConnectionManager = /** @class */ (function () {
      */
     ConnectionManager.prototype.get = function (name) {
         if (name === void 0) { name = "default"; }
-        var connection = this.connections.find(function (connection) { return connection.name === name; });
+        var connection = this.connectionMap.get(name);
         if (!connection)
             throw new ConnectionNotFoundError_1.ConnectionNotFoundError(name);
         return connection;
@@ -44,17 +52,15 @@ var ConnectionManager = /** @class */ (function () {
      */
     ConnectionManager.prototype.create = function (options) {
         // check if such connection is already registered
-        var existConnection = this.connections.find(function (connection) { return connection.name === (options.name || "default"); });
+        var existConnection = this.connectionMap.get(options.name || "default");
         if (existConnection) {
             // if connection is registered and its not closed then throw an error
             if (existConnection.isConnected)
                 throw new AlreadyHasActiveConnectionError_1.AlreadyHasActiveConnectionError(options.name || "default");
-            // if its registered but closed then simply remove it from the manager
-            this.connections.splice(this.connections.indexOf(existConnection), 1);
         }
         // create a new connection
         var connection = new Connection_1.Connection(options);
-        this.connections.push(connection);
+        this.connectionMap.set(connection.name, connection);
         return connection;
     };
     return ConnectionManager;

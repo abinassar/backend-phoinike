@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 import { EventListenerTypes } from "../../metadata/types/EventListenerTypes";
 /**
  * Calls a method on which this decorator is applied after entity is loaded.

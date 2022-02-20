@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 import { ColumnTypeUndefinedError } from "../../error/ColumnTypeUndefinedError";
 import { PrimaryColumnCannotBeNullableError } from "../../error/PrimaryColumnCannotBeNullableError";
 /**

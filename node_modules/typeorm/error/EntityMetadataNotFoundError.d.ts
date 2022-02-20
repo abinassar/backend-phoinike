@@ -1,7 +1,6 @@
-import { EntitySchema } from "../index";
-/**
- */
-export declare class EntityMetadataNotFoundError extends Error {
-    name: string;
-    constructor(target: Function | EntitySchema<any> | string);
+import { EntityTarget } from "../common/EntityTarget";
+import { TypeORMError } from "./TypeORMError";
+export declare class EntityMetadataNotFoundError extends TypeORMError {
+    constructor(target: EntityTarget<any>);
+    private stringifyTarget;
 }

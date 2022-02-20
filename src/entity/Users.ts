@@ -51,6 +51,14 @@ export class Users {
   @IsOptional()
   resetToken: string;
 
+  @Column()
+  @IsOptional()
+  status: string;
+
+  @Column()
+  @IsOptional()
+  confirmationCode: string;
+
   hashPassword(): void {
     const salt = bcrypt.genSaltSync(10);
     this.password = bcrypt.hashSync(this.password, salt);

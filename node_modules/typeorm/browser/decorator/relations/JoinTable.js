@@ -1,4 +1,4 @@
-import { getMetadataArgsStorage } from "../../";
+import { getMetadataArgsStorage } from "../../globals";
 /**
  * JoinTable decorator is used in many-to-many relationship to specify owner side of relationship.
  * Its also used to set a custom junction table's name, column names and referenced columns.

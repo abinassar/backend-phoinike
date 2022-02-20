@@ -1,18 +1,15 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when transaction is already started and user tries to run it again.
  */
 var TransactionAlreadyStartedError = /** @class */ (function (_super) {
-    tslib_1.__extends(TransactionAlreadyStartedError, _super);
+    __extends(TransactionAlreadyStartedError, _super);
     function TransactionAlreadyStartedError() {
-        var _this = _super.call(this) || this;
-        _this.name = "TransactionAlreadyStartedError";
-        Object.setPrototypeOf(_this, TransactionAlreadyStartedError.prototype);
-        _this.message = "Transaction already started for the given connection, commit current transaction before starting a new one.";
-        return _this;
+        return _super.call(this, "Transaction already started for the given connection, commit current transaction before starting a new one.") || this;
     }
     return TransactionAlreadyStartedError;
-}(Error));
+}(TypeORMError));
 export { TransactionAlreadyStartedError };
 
 //# sourceMappingURL=TransactionAlreadyStartedError.js.map

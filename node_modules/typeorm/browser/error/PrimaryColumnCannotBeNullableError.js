@@ -1,16 +1,13 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 var PrimaryColumnCannotBeNullableError = /** @class */ (function (_super) {
-    tslib_1.__extends(PrimaryColumnCannotBeNullableError, _super);
+    __extends(PrimaryColumnCannotBeNullableError, _super);
     function PrimaryColumnCannotBeNullableError(object, propertyName) {
-        var _this = _super.call(this) || this;
-        _this.name = "PrimaryColumnCannotBeNullableError";
-        Object.setPrototypeOf(_this, PrimaryColumnCannotBeNullableError.prototype);
-        _this.message = "Primary column " + object.constructor.name + "#" + propertyName + " cannot be nullable. " +
-            "Its not allowed for primary keys. Try to remove nullable option.";
-        return _this;
+        return _super.call(this, "Primary column " + object.constructor.name + "#" + propertyName + " cannot be nullable. " +
+            "Its not allowed for primary keys. Try to remove nullable option.") || this;
     }
     return PrimaryColumnCannotBeNullableError;
-}(Error));
+}(TypeORMError));
 export { PrimaryColumnCannotBeNullableError };
 
 //# sourceMappingURL=PrimaryColumnCannotBeNullableError.js.map

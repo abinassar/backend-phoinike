@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.ManyToManySubjectBuilder = void 0;
 var Subject_1 = require("../Subject");
 var OrmUtils_1 = require("../../util/OrmUtils");
 /**
@@ -115,7 +116,7 @@ var ManyToManySubjectBuilder = /** @class */ (function () {
                 // but without entity being inserted we cannot bind it in the relation operation, so we throw an exception here
                 // we decided to remove this error because it brings complications when saving object with non-saved entities
                 // if (!relatedEntitySubject)
-                //     throw new Error(`Many-to-many relation "${relation.entityMetadata.name}.${relation.propertyPath}" contains ` +
+                //     throw new TypeORMError(`Many-to-many relation "${relation.entityMetadata.name}.${relation.propertyPath}" contains ` +
                 //         `entities which do not exist in the database yet, thus they cannot be bind in the database. ` +
                 //         `Please setup cascade insertion or save entities before binding it.`);
                 if (!relatedEntitySubject)
@@ -142,12 +143,14 @@ var ManyToManySubjectBuilder = /** @class */ (function () {
                 junctionSubject.changeMaps.push({
                     column: column,
                     value: ownerValue,
+                    // valueFactory: (value) => column.referencedColumn!.getEntityValue(value) // column.referencedColumn!.getEntityValue(ownerEntityMap),
                 });
             });
             relation.junctionEntityMetadata.inverseColumns.forEach(function (column) {
                 junctionSubject.changeMaps.push({
                     column: column,
                     value: inverseValue,
+                    // valueFactory: (value) => column.referencedColumn!.getEntityValue(value) // column.referencedColumn!.getEntityValue(inverseEntityMap),
                 });
             });
         });

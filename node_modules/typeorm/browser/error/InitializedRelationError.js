@@ -1,4 +1,5 @@
-import * as tslib_1 from "tslib";
+import { __extends } from "tslib";
+import { TypeORMError } from "./TypeORMError";
 /**
  * Thrown when relation has array initialized which is forbidden my ORM.
  *
@@ -6,17 +7,14 @@ import * as tslib_1 from "tslib";
  * @see http://typeorm.io/#/relations-faq/avoid-relation-property-initializers
  */
 var InitializedRelationError = /** @class */ (function (_super) {
-    tslib_1.__extends(InitializedRelationError, _super);
+    __extends(InitializedRelationError, _super);
     function InitializedRelationError(relation) {
-        var _this = _super.call(this) || this;
-        Object.setPrototypeOf(_this, InitializedRelationError.prototype);
-        _this.message = "Array initializations are not allowed in entity relations. " +
+        return _super.call(this, "Array initializations are not allowed in entity relations. " +
             ("Please remove array initialization (= []) from \"" + relation.entityMetadata.targetName + "#" + relation.propertyPath + "\". ") +
-            "This is ORM requirement to make relations to work properly. Refer docs for more information.";
-        return _this;
+            "This is ORM requirement to make relations to work properly. Refer docs for more information.") || this;
     }
     return InitializedRelationError;
-}(Error));
+}(TypeORMError));
 export { InitializedRelationError };
 
 //# sourceMappingURL=InitializedRelationError.js.map

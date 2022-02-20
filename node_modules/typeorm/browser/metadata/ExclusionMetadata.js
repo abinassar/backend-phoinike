@@ -21,7 +21,7 @@ var ExclusionMetadata = /** @class */ (function () {
      * Must be called after all entity metadata's properties map, columns and relations are built.
      */
     ExclusionMetadata.prototype.build = function (namingStrategy) {
-        this.name = this.givenName ? this.givenName : namingStrategy.exclusionConstraintName(this.entityMetadata.tablePath, this.expression);
+        this.name = this.givenName ? this.givenName : namingStrategy.exclusionConstraintName(this.entityMetadata.tableName, this.expression);
         return this;
     };
     return ExclusionMetadata;
